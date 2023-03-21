@@ -10,6 +10,9 @@ html5lib = "*"
 selenium = "*"
 sqlalchemy = "*"
 sqlalchemy-utils = "*"
+google-play-scraper = "*"
+tinydb = "*"
+pymysql = "*"
 
 [dev-packages]
 
