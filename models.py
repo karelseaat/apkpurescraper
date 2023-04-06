@@ -3,7 +3,7 @@
 import datetime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
-from sqlalchemy import Table, Column, ForeignKey, String, Integer, Boolean, Date, DateTime
+from sqlalchemy import Table, Column, ForeignKey, String, Integer, Boolean, Date, DateTime, BigInteger
 from sqlalchemy_utils import get_hybrid_properties
 from sqlalchemy.ext.hybrid import hybrid_property
 
@@ -16,7 +16,8 @@ class Appurl(Base):
     appid = Column(String(128), nullable=False, unique=True)
     appurl = Column(String(128), nullable=False)
     done = Column(Boolean, default=False)
-    inplaystore = Column(Boolean, default=False)
+    # inplaystore = Column(Boolean, default=False)
+    lastplaycrawl = Column(DateTime)
     playstoreapp_id = Column(ForeignKey('playstoreapp.id'), index=True)
     playstoreapp = relationship('Playstoreapp', back_populates="rawapp")
 
@@ -30,7 +31,7 @@ class Playstoreapp(Base):
     __tablename__ = 'playstoreapp'
     id = Column(Integer, primary_key=True)
     appid = Column(String(128), nullable=False)
-    downloads = Column(Integer)
+    downloads = Column(BigInteger)
     reviews = Column(Integer)
     rating = Column(Integer)
     developer = Column(String(128), nullable=False)

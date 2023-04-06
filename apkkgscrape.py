@@ -78,7 +78,7 @@ allids = set([appurl.appid for appurl in appurls])
 
 
 threads = []
-limits = 4
+limits = 2
 drivers = []
 
 for i in range(limits):

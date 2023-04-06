@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-
-# from selenium.webdriver.firefox.options import Options
+# https://pypi.org/project/requests-tor/
+# https://androidapksfree.com/
 
 from models import Appurl, Playstoreapp, Genre
 
@@ -28,53 +28,63 @@ def textmult(text):
 
     return 0
 
-def crawlapage(page):
 
-    page.inplaystore = False
+def process_results(multy):
 
-    try:
-        result = app(page.appid)
+    result, page = multy
 
+    playstoreapp = session.query(Playstoreapp).filter(Playstoreapp.appid == result['appId']).first()
+    if not playstoreapp:
         playstoreapp = Playstoreapp()
-        playstoreapp.appid = page.appid
-        playstoreapp.downloads = result['minInstalls']
-        playstoreapp.rating = result['score']
-        playstoreapp.reviews = result['reviews']
-        playstoreapp.developer = result['developer']
-        playstoreapp.devwebsite = result['developerWebsite']
-        playstoreapp.address = result['developerAddress']
-        playstoreapp.adds = result['adSupported']
-        playstoreapp.title = result['title']
-        playstoreapp.inapp = result['offersIAP']
-        playstoreapp.icon = result['icon']
 
-        pprint(result)
+    playstoreapp.appid = result['appId']
+    playstoreapp.downloads = result['minInstalls']
+    playstoreapp.rating = result['score']
+    playstoreapp.reviews = result['reviews']
+    playstoreapp.developer = result['developer']
+    if result['developerWebsite']:
+        playstoreapp.devwebsite = result['developerWebsite'][:127]
+    if result['developerAddress']:
+        playstoreapp.address = result['developerAddress'][:127]
+    playstoreapp.adds = result['adSupported']
+    playstoreapp.title = result['title']
+    playstoreapp.inapp = result['offersIAP']
+    playstoreapp.icon = result['icon']
 
 
-        genre = session.query(Genre).filter(Genre.name == result['genre']).first()
-        if not genre:
-            genre = Genre()
-            genre.name = result['genre']
-        playstoreapp.genres.append(genre)
+    genre = session.query(Genre).filter(Genre.name == result['genre']).first()
+    if not genre:
+        genre = Genre()
+        genre.name = result['genre']
+    playstoreapp.genres.append(genre)
 
-        if result['released']:
-            playstoreapp.releasedon = datetime.strptime(result['released'], '%b %d, %Y')
+    if result['released']:
+        playstoreapp.releasedon = datetime.strptime(result['released'], '%b %d, %Y')
 
-        if result['updated']:
-            playstoreapp.lastupdate = datetime.fromtimestamp(int(result['updated']))
-        playstoreapp.about = result['description']
-        playstoreapp.price = result['price']
-        session.add(playstoreapp)
-        page.inplaystore = True
-        page.playstoreapp = playstoreapp
+    if result['updated']:
+        playstoreapp.lastupdate = datetime.fromtimestamp(int(result['updated']))
+    playstoreapp.about = result['description'][:255]
+    playstoreapp.price = result['price']
 
-    except Exception as e:
-        print(e)
+    page.playstoreapp = playstoreapp
+
+
 
     session.add(page)
 
-    session.commit()
-    time.sleep(1)
+def crawlapage(page):
+    page.lastplaycrawl = datetime.now()
+    session.add(page)
+    try:
+        result = app(page.appid)
+        print("app found: ", page.appid)
+        return result
+
+    except Exception as e:
+        print(e, page.appid)
+        return None
+
+
 
 def make_session():
     engine = create_engine("mysql+pymysql://root:password@localhost/test?charset=utf8mb4", echo=False)
@@ -83,21 +93,32 @@ def make_session():
     return dbsession()
 
 session = make_session()
-# options = Options()
-# options.add_argument("--headless")
 
-allthethings = []
+results = []
+
+while True:
+
+    print("getting app ids")
+    crawls = (session
+            .query(Appurl)
+            .filter(Appurl.done == True)
+            .order_by(Appurl.lastplaycrawl)
+            .limit(50)
+            .all()
+        )
+
+    print("clawling app ids")
+    for crawl in crawls:
+        result = crawlapage(crawl)
+        if result:
+            results.append((result, crawl))
+        time.sleep(2)
 
 
-crawls = (session
-        .query(Appurl)
-        .filter(Appurl.done == True)
-        .filter(Appurl.inplaystore == None)
-        .all()
-    )
+    print("crawl done, processing results")
+    for result in results:
+        process_results(result)
 
-
-for crawl in crawls:
-    crawlapage(crawl)
-
-driver.quit()
+    results = []
+    print("commiting!")
+    session.commit()

@@ -19,7 +19,7 @@ from datetime import datetime
 
 
 def make_session():
-    engine = create_engine("sqlite:///testit.sqlite", echo=False, connect_args={'check_same_thread': False})
+    engine = create_engine("mysql+pymysql://root:password@localhost/test?charset=utf8mb4", echo=False)
     dbsession = scoped_session(sessionmaker(bind=engine))
     Base.metadata.create_all(engine)
     return dbsession()
@@ -94,15 +94,21 @@ def run(page):
 
     klont = driver.find_elements(By.XPATH, '//a')
     for element in klont:
-        thehref = str(element.get_attribute('href'))
-        thesplit = thehref.split("/")
+
+        try:
+            thehref = str(element.get_attribute('href'))
+            thesplit = thehref.split("/")
+        except Exception as e:
+            thesplit = "0"
+            thehref = ""
+
 
         if re.search("^.*\..*\/*.\/.*\..*\.[a-zA-Z0-9]*$", thehref) and len(thesplit) == 5:
 
             appid = thehref.split("/")[-1]
 
-            if not appid in allids:
-
+            if not appid in allids and len(appid) < 128:
+                print(appid)
                 anewurl = Appurl()
                 appurls.append(anewurl)
                 anewurl.appurl = thehref
@@ -123,7 +129,7 @@ appurls = session.query(Appurl).all()
 allids = set([appurl.appid for appurl in appurls])
 
 allapps = []
-allpages = generate_stadard_pages(1)
+allpages = generate_stadard_pages(3)
 
 for page in allpages:
     allapps += run(page)
