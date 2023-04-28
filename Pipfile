@@ -13,6 +13,7 @@ sqlalchemy-utils = "*"
 google-play-scraper = "*"
 tinydb = "*"
 pymysql = "*"
+fastcrc = "*"
 
 [dev-packages]
 

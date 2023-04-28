@@ -15,7 +15,7 @@ class Appurl(Base):
     id = Column(Integer, primary_key=True)
     appid = Column(String(128), nullable=False, unique=True)
     appurl = Column(String(128), nullable=False)
-    done = Column(Boolean, default=False)
+    done = Column(DateTime)
     # inplaystore = Column(Boolean, default=False)
     lastplaycrawl = Column(DateTime)
     playstoreapp_id = Column(ForeignKey('playstoreapp.id'), index=True)

@@ -15,6 +15,7 @@ from sqlalchemy.orm import sessionmaker, scoped_session
 from models import Base
 import time
 from datetime import datetime
+from fastcrc import crc64
 
 
 
@@ -84,6 +85,7 @@ def integrate(listofapps):
     for app in listofapps:
         session.add(app)
         allids.add(app.appid)
+        print(app.appid)
 
     session.commit()
 
@@ -107,10 +109,11 @@ def run(page):
 
             appid = thehref.split("/")[-1]
 
-            if not appid in allids and len(appid) < 128:
-                print(appid)
+            if not crc64.ecma_182(appid.encode()) in allids and len(appid) < 128:
+
                 anewurl = Appurl()
                 appurls.append(anewurl)
+                allids.add(crc64.ecma_182(appid.encode()))
                 anewurl.appurl = thehref
                 anewurl.appid = appid
 
@@ -126,10 +129,10 @@ driver = webdriver.Firefox(
 )
 
 appurls = session.query(Appurl).all()
-allids = set([appurl.appid for appurl in appurls])
+allids = set([crc64.ecma_182(appurl.appid.encode()) for appurl in appurls])
 
 allapps = []
-allpages = generate_stadard_pages(3)
+allpages = generate_stadard_pages(5)
 
 for page in allpages:
     allapps += run(page)

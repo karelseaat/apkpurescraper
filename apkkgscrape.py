@@ -16,6 +16,7 @@ import time
 from datetime import datetime
 import threading
 from sqlalchemy import func
+from fastcrc import crc64
 
 
 def make_session():
@@ -24,18 +25,19 @@ def make_session():
     Base.metadata.create_all(engine)
     return dbsession()
 
+def split_it(aarray, maxsize):
+    return [aarray[i*maxsize:(i+1)*maxsize] for i in range(len(aarray)//maxsize)]
 
 
 def integrate(listofapps):
     integratecount = 0
     for app in listofapps:
 
-        if not app.appid in allids:
+        if not crc64.ecma_182(app.appid.encode()) in allids:
             integratecount += 1
             session.add(app)
-            allids.add(app.appid)
+            allids.add(crc64.ecma_182(app.appid.encode()))
 
-    session.commit()
     return integratecount
 
 class myThread (threading.Thread):
@@ -47,7 +49,7 @@ class myThread (threading.Thread):
         self.driver = driver
 
     def run(self):
-        self.driver.get(f"https://apksos.com/app/{self.page.appid}")
+        self.driver.get(self.page.appurl)
         appurls = []
 
         klont = self.driver.find_elements(By.XPATH, '//a')
@@ -55,7 +57,6 @@ class myThread (threading.Thread):
             thehref = str(element.get_attribute('href'))
             thesplit = thehref.split("/")
 
-            # print(thehref, len(thesplit))
 
             if re.search("^.*\..*\/*.\/.*\..*\.[a-zA-Z0-9]*$", thehref) and len(thesplit) == 5:
 
@@ -74,11 +75,11 @@ session = make_session()
 
 appurls = session.query(Appurl).all()
 
-allids = set([appurl.appid for appurl in appurls])
+allids = set([crc64.ecma_182(appurl.appid.encode()) for appurl in appurls])
 
 
 threads = []
-limits = 2
+limits = 4
 drivers = []
 
 for i in range(limits):
@@ -92,32 +93,34 @@ for i in range(limits):
 
 while True:
     nowtime = datetime.now()
-    results = session.query(Appurl).filter_by(done=False).order_by(func.random()).limit(limits).all()
+    results = session.query(Appurl).filter(Appurl.done.is_(None)).filter(Appurl.appurl.like('%apkpure.com%')).order_by(func.random()).limit(40).all()
     latertime = datetime.now()
 
     print("query time: " + str((latertime-nowtime).total_seconds()))
 
     nowtime = datetime.now()
-    for index, result in enumerate(results):
-        result.done = True
-        session.add(result)
-        thread = myThread(result, drivers[index])
-        threads.append(thread)
-        thread.start()
 
 
-    latertime = datetime.now()
-    print("thread start time: " + str((latertime-nowtime).total_seconds()))
-    allresults = []
+    for subarray in split_it(results, limits):
 
-    nowtime = datetime.now()
-    for t in threads:
-        t.join()
-        allresults += t.value
+        for index, result in enumerate(subarray):
+            result.done = datetime.now()
+            session.add(result)
+            thread = myThread(result, drivers[index])
+            threads.append(thread)
+            thread.start()
 
-    latertime = datetime.now()
 
-    print("join seconds: " + str((latertime-nowtime).total_seconds()), " total rsults: " + str(integrate(allresults)))
+        allresults = []
+
+        nowtime = datetime.now()
+        for t in threads:
+            t.join()
+            allresults += t.value
+
+        latertime = datetime.now()
+
+        print("join seconds: " + str((latertime-nowtime).total_seconds()), " total rsults: " + str(integrate(allresults)))
 
     nowtime = datetime.now()
     session.commit()

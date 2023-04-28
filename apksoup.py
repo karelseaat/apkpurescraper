@@ -13,6 +13,7 @@ import threading
 from sqlalchemy import func
 import requests
 from bs4 import BeautifulSoup
+from fastcrc import crc64
 
 
 def make_session():
@@ -21,17 +22,19 @@ def make_session():
     Base.metadata.create_all(engine)
     return dbsession()
 
+def split_it(aarray, maxsize):
+    return [aarray[i*maxsize:(i+1)*maxsize] for i in range(len(aarray)//maxsize)]
 
 def integrate(listofapps):
     integratecount = 0
     for app in listofapps:
 
-        if not app.appid in allids:
+        if not crc64.ecma_182(app.appid.encode()) in allids:
             integratecount += 1
             session.add(app)
-            allids.add(app.appid)
+            allids.add(crc64.ecma_182(app.appid.encode()))
 
-    session.commit()
+    # session.commit()
     return integratecount
 
 
@@ -46,7 +49,7 @@ class myThread (threading.Thread):
     def run(self):
 
         try:
-            r = requests.get(f"https://apksos.com/app/{self.page.appid}", timeout=3)
+            r = requests.get(f"https://apksos.com/app/{self.page.appid}", timeout=10)
         except Exception as e:
             print("time out!")
             return
@@ -78,43 +81,42 @@ session = make_session()
 
 appurls = session.query(Appurl).all()
 
-allids = set([appurl.appid for appurl in appurls])
+allids = set([crc64.ecma_182(appurl.appid.encode()) for appurl in appurls])
 
 
 threads = []
 limits = 4
 
 
-
-
 while True:
     nowtime = datetime.now()
-    results = session.query(Appurl).filter_by(done=False).order_by(func.random()).limit(limits).all()
+    results = session.query(Appurl).filter_by(done=False).order_by(func.random()).limit(40).all()
     latertime = datetime.now()
 
     print("query time: " + str((latertime-nowtime).total_seconds()))
 
     nowtime = datetime.now()
-    for index, result in enumerate(results):
-        result.done = True
-        session.add(result)
-        thread = myThread(result)
-        threads.append(thread)
-        thread.start()
+
+    for subarray in split_it(results, limits):
+        for index, result in enumerate(subarray):
+            result.done = True
+            session.add(result)
+            thread = myThread(result)
+            threads.append(thread)
+            thread.start()
 
 
-    latertime = datetime.now()
-    print("thread start time: " + str((latertime-nowtime).total_seconds()))
-    allresults = []
+        allresults = []
 
-    nowtime = datetime.now()
-    for t in threads:
-        t.join()
-        allresults += t.value
+        nowtime = datetime.now()
+        for t in threads:
+            t.join()
+            allresults += t.value
 
-    latertime = datetime.now()
+        latertime = datetime.now()
 
-    print("join seconds: " + str((latertime-nowtime).total_seconds()), " total rsults: " + str(integrate(allresults)))
+        print("join seconds: " + str((latertime-nowtime).total_seconds()), " total rsults: " + str(integrate(allresults)))
+        time.sleep(10)
 
     nowtime = datetime.now()
     session.commit()
