@@ -17,7 +17,7 @@ from fastcrc import crc64
 
 
 def make_session():
-    engine = create_engine("mysql+pymysql://root:password@localhost/test?charset=utf8mb4", echo=False)
+    engine = create_engine("mysql+pymysql://root:kateobele@localhost/apkscraper?charset=utf8mb4", echo=False)
     dbsession = scoped_session(sessionmaker(bind=engine))
     Base.metadata.create_all(engine)
     return dbsession()
@@ -90,7 +90,7 @@ limits = 4
 
 while True:
     nowtime = datetime.now()
-    results = session.query(Appurl).filter_by(done=False).order_by(func.random()).limit(40).all()
+    results = session.query(Appurl).filter(Appurl.done.is_(None)).order_by(func.random()).limit(40).all()
     latertime = datetime.now()
 
     print("query time: " + str((latertime-nowtime).total_seconds()))
@@ -99,7 +99,7 @@ while True:
 
     for subarray in split_it(results, limits):
         for index, result in enumerate(subarray):
-            result.done = True
+            result.done = datetime.now()
             session.add(result)
             thread = myThread(result)
             threads.append(thread)

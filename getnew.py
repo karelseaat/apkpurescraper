@@ -20,7 +20,7 @@ from fastcrc import crc64
 
 
 def make_session():
-    engine = create_engine("mysql+pymysql://root:password@localhost/test?charset=utf8mb4", echo=False)
+    engine = create_engine("mysql+pymysql://root:kateobele@localhost/apkscraper?charset=utf8mb4", echo=False)
     dbsession = scoped_session(sessionmaker(bind=engine))
     Base.metadata.create_all(engine)
     return dbsession()
@@ -123,6 +123,7 @@ def run(page):
 session = make_session()
 options = Options()
 options.add_argument("--headless")
+options.add_argument('--blink-settings=imagesEnabled=false')
 
 driver = webdriver.Firefox(
     executable_path= r"./geckodriver", options=options
@@ -132,7 +133,7 @@ appurls = session.query(Appurl).all()
 allids = set([crc64.ecma_182(appurl.appid.encode()) for appurl in appurls])
 
 allapps = []
-allpages = generate_stadard_pages(5)
+allpages = generate_stadard_pages(10)
 
 for page in allpages:
     allapps += run(page)

@@ -4,6 +4,7 @@
 # https://androidapksfree.com/
 
 from models import Appurl, Playstoreapp, Genre
+from proxy_model import Proxys
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
@@ -13,6 +14,11 @@ from pprint import pprint
 
 from datetime import datetime, timedelta
 from google_play_scraper import app
+import random
+from google_play_scraper.features.app import parse_dom
+import requests
+
+# from fastcrc import crc64
 
 import json
 
@@ -36,6 +42,9 @@ def process_results(multy):
     playstoreapp = session.query(Playstoreapp).filter(Playstoreapp.appid == result['appId']).first()
     if not playstoreapp:
         playstoreapp = Playstoreapp()
+        print("insert new")
+    else:
+        print("use existing")
 
     playstoreapp.appid = result['appId']
     playstoreapp.downloads = result['minInstalls']
@@ -63,56 +72,95 @@ def process_results(multy):
 
     if result['updated']:
         playstoreapp.lastupdate = datetime.fromtimestamp(int(result['updated']))
-    playstoreapp.about = result['description'][:255]
+    
+    if result['description']:
+        playstoreapp.about = result['description'][:255]
     playstoreapp.price = result['price']
 
     page.playstoreapp = playstoreapp
 
-
-
     session.add(page)
+
+
+def get_raw(url):
+
+
+
+    # proxydict = {"https":f"{proxy.proto}://{proxy.ip}:{proxy.port}"}
+    try:
+        result = requests.get(url)
+        if result.status_code != 200:
+            return 0, 1
+        else:
+            return 1, result
+    except Exception as e:
+        print(e)
+        return 0, 2
 
 def crawlapage(page):
-    page.lastplaycrawl = datetime.now()
-    session.add(page)
-    try:
-        result = app(page.appid)
-        print("app found: ", page.appid)
-        return result
+    # global goodproxies
 
-    except Exception as e:
-        print(e, page.appid)
+    page.lastplaycrawl = datetime.now()
+    # newproxy = random.choice(goodproxies)
+    session.add(page)
+
+    url = f"https://play.google.com/store/apps/details?id={page.appid}"
+    result = get_raw(url)
+
+    if result[0]:
+        return parse_dom(result[1].text, page.appid, url)
+    elif result[1] == 2:
+        # goodproxies.remove(newproxy)
+        return None
+    else:
         return None
 
 
 
 def make_session():
-    engine = create_engine("mysql+pymysql://root:password@localhost/test?charset=utf8mb4", echo=False)
+    engine = create_engine("mysql+pymysql://root:kateobele@localhost/apkscraper?charset=utf8mb4", echo=False)
+    dbsession = scoped_session(sessionmaker(bind=engine))
+    Base.metadata.create_all(engine)
+    return dbsession()
+
+
+def make_proxy_session():
+    engine = create_engine("mysql+pymysql://root:kateobele@localhost/proxymaster?charset=utf8mb4", echo=False)
     dbsession = scoped_session(sessionmaker(bind=engine))
     Base.metadata.create_all(engine)
     return dbsession()
 
 session = make_session()
+proxysession = make_proxy_session()
+
+
+goodproxies = proxysession.query(Proxys).filter(Proxys.canreachsite == True).filter(Proxys.google == True).all()
+
+
 
 results = []
 
-while True:
+
+for _ in range(0, 1500):
 
     print("getting app ids")
     crawls = (session
             .query(Appurl)
-            .filter(Appurl.done == True)
             .order_by(Appurl.lastplaycrawl)
-            .limit(50)
+            .limit(100)
             .all()
         )
 
     print("clawling app ids")
     for crawl in crawls:
         result = crawlapage(crawl)
+        crawl.lastplaycrawl = datetime.now()
         if result:
             results.append((result, crawl))
-        time.sleep(2)
+            print(f"{crawl.appid} = Good")
+        else:
+            print(f"{crawl.appid} = No good !")
+        time.sleep(1.5)
 
 
     print("crawl done, processing results")

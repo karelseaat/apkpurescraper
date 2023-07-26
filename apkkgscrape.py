@@ -13,14 +13,14 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 from models import Base
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 import threading
 from sqlalchemy import func
 from fastcrc import crc64
 
 
 def make_session():
-    engine = create_engine("mysql+pymysql://root:password@localhost/test?charset=utf8mb4", echo=False)
+    engine = create_engine("mysql+pymysql://root:kateobele@localhost/apkscraper?charset=utf8mb4", echo=False)
     dbsession = scoped_session(sessionmaker(bind=engine))
     Base.metadata.create_all(engine)
     return dbsession()
@@ -86,6 +86,7 @@ for i in range(limits):
     print(i)
     options = Options()
     options.add_argument("--headless")
+    options.add_argument('--blink-settings=imagesEnabled=false')
     driver = webdriver.Firefox(executable_path= r"./geckodriver", options=options)
     drivers.append(driver)
     driver.set_page_load_timeout(10)
@@ -93,7 +94,7 @@ for i in range(limits):
 
 while True:
     nowtime = datetime.now()
-    results = session.query(Appurl).filter(Appurl.done.is_(None)).filter(Appurl.appurl.like('%apkpure.com%')).order_by(func.random()).limit(40).all()
+    results = session.query(Appurl).filter(Appurl.done.is_(None)).filter(Appurl.appurl.like('%apkpure.com%')).order_by(func.random()).limit(200).all()
     latertime = datetime.now()
 
     print("query time: " + str((latertime-nowtime).total_seconds()))
