@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-
+#!./venv/bin/python3
 
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -20,7 +19,7 @@ from fastcrc import crc64
 
 
 def make_session():
-    engine = create_engine("mysql+pymysql://root:kateobele@localhost/apkscraper?charset=utf8mb4", echo=False)
+    engine = create_engine("mysql+pymysql://root:kateobele@192.168.2.123/apkscraper?charset=utf8mb4", echo=False)
     dbsession = scoped_session(sessionmaker(bind=engine))
     Base.metadata.create_all(engine)
     return dbsession()
@@ -126,7 +125,7 @@ options.add_argument("--headless")
 options.add_argument('--blink-settings=imagesEnabled=false')
 
 driver = webdriver.Firefox(
-    executable_path= r"./geckodriver", options=options
+    options=options
 )
 
 appurls = session.query(Appurl).all()

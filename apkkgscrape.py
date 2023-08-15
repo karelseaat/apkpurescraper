@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!./venv/bin/python3
 
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -20,7 +20,7 @@ from fastcrc import crc64
 
 
 def make_session():
-    engine = create_engine("mysql+pymysql://root:kateobele@localhost/apkscraper?charset=utf8mb4", echo=False)
+    engine = create_engine("mysql+pymysql://root:kateobele@192.168.2.123/apkscraper?charset=utf8mb4", echo=False)
     dbsession = scoped_session(sessionmaker(bind=engine))
     Base.metadata.create_all(engine)
     return dbsession()
@@ -79,7 +79,7 @@ allids = set([crc64.ecma_182(appurl.appid.encode()) for appurl in appurls])
 
 
 threads = []
-limits = 4
+limits = 2
 drivers = []
 
 for i in range(limits):
@@ -87,7 +87,7 @@ for i in range(limits):
     options = Options()
     options.add_argument("--headless")
     options.add_argument('--blink-settings=imagesEnabled=false')
-    driver = webdriver.Firefox(executable_path= r"./geckodriver", options=options)
+    driver = webdriver.Firefox(options=options)
     drivers.append(driver)
     driver.set_page_load_timeout(10)
 

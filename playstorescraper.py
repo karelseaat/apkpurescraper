@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!./venv/bin/python3
 
 # https://pypi.org/project/requests-tor/
 # https://androidapksfree.com/
@@ -72,7 +72,7 @@ def process_results(multy):
 
     if result['updated']:
         playstoreapp.lastupdate = datetime.fromtimestamp(int(result['updated']))
-    
+
     if result['description']:
         playstoreapp.about = result['description'][:255]
     playstoreapp.price = result['price']
