@@ -1,9 +1,0 @@
-proxy api
-pirate proxy via pwnagochi
-micro pi hosting
-android verglijk api
-een micropython hosting ding
-ever storage store data op glas voor eeuwig.
-
-lucht gas sensor met windrichting voor gas opsporing
-gluidsrichtings sensor vom harde gluiden te localiseren
