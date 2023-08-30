@@ -3,27 +3,20 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
+from sqlalchemy import func
 
 from selenium.webdriver.firefox.options import Options
 import re
 
 from models import Appurl
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, scoped_session
-from models import Base
+
 import time
 from datetime import datetime, timedelta
 import threading
-from sqlalchemy import func
+
 from fastcrc import crc64
-
-
-def make_session():
-    engine = create_engine("mysql+pymysql://root:kateobele@192.168.2.123/apkscraper?charset=utf8mb4", echo=False)
-    dbsession = scoped_session(sessionmaker(bind=engine))
-    Base.metadata.create_all(engine)
-    return dbsession()
+from common import make_session
 
 def split_it(aarray, maxsize):
     return [aarray[i*maxsize:(i+1)*maxsize] for i in range(len(aarray)//maxsize)]

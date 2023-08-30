@@ -14,13 +14,8 @@ from sqlalchemy import func
 import requests
 from bs4 import BeautifulSoup
 from fastcrc import crc64
+from common import make_session
 
-
-def make_session():
-    engine = create_engine("mysql+pymysql://root:kateobele@localhost/apkscraper?charset=utf8mb4", echo=False)
-    dbsession = scoped_session(sessionmaker(bind=engine))
-    Base.metadata.create_all(engine)
-    return dbsession()
 
 def split_it(aarray, maxsize):
     return [aarray[i*maxsize:(i+1)*maxsize] for i in range(len(aarray)//maxsize)]

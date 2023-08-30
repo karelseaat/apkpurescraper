@@ -34,20 +34,21 @@ class Playstoreapp(Base):
     downloads = Column(BigInteger)
     reviews = Column(Integer)
     rating = Column(Integer)
-    developer = Column(String(128), nullable=False)
+    developer = Column(String(128), nullable=True)
     inapp = Column(Boolean, default=False)
     adds = Column(Boolean, default=False)
-    title = Column(String(128))
+    title = Column(String(256))
     lastupdate = Column(DateTime)
     about = Column(String(256))
     price = Column(Integer)
     lastcrawled = Column(DateTime, default=datetime.datetime.now())
     releasedon = Column(DateTime)
     icon = Column(String(128))
-    devwebsite = Column(String(128))
-    address = Column(String(128))
+    devwebsite = Column(String(128), nullable=True)
+    address = Column(String(128), nullable=True)
     size = Column(Integer)
 
+    developer_id = Column(Integer, ForeignKey('developer.id'))
 
     genres = relationship(
         "Genre",
@@ -67,3 +68,11 @@ class Genre(Base):
         secondary=app_genre_association,
         back_populates="genres",
     )
+
+class Developer(Base):
+    __tablename__ = 'developer'
+    id = Column(Integer, primary_key=True)
+    apps = relationship('Playstoreapp', backref='thedeveloper')
+    name = Column(String(128), nullable=False)
+    devwebsite = Column(String(128))
+    address = Column(String(128))

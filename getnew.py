@@ -16,14 +16,7 @@ import time
 from datetime import datetime
 from fastcrc import crc64
 
-
-
-def make_session():
-    engine = create_engine("mysql+pymysql://root:kateobele@192.168.2.123/apkscraper?charset=utf8mb4", echo=False)
-    dbsession = scoped_session(sessionmaker(bind=engine))
-    Base.metadata.create_all(engine)
-    return dbsession()
-
+from common import make_session
 
 def generate_stadard_pages(number):
     defurl = "https://apkpure.com/"

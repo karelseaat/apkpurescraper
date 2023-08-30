@@ -17,6 +17,7 @@ from google_play_scraper import app
 import random
 from google_play_scraper.features.app import parse_dom
 import requests
+from common import make_session
 
 # from fastcrc import crc64
 
@@ -101,7 +102,7 @@ def crawlapage(page):
     # global goodproxies
 
     page.lastplaycrawl = datetime.now()
-    # newproxy = random.choice(goodproxies)
+
     session.add(page)
 
     url = f"https://play.google.com/store/apps/details?id={page.appid}"
@@ -117,29 +118,10 @@ def crawlapage(page):
 
 
 
-def make_session():
-    engine = create_engine("mysql+pymysql://root:kateobele@localhost/apkscraper?charset=utf8mb4", echo=False)
-    dbsession = scoped_session(sessionmaker(bind=engine))
-    Base.metadata.create_all(engine)
-    return dbsession()
-
-
-def make_proxy_session():
-    engine = create_engine("mysql+pymysql://root:kateobele@localhost/proxymaster?charset=utf8mb4", echo=False)
-    dbsession = scoped_session(sessionmaker(bind=engine))
-    Base.metadata.create_all(engine)
-    return dbsession()
 
 session = make_session()
-proxysession = make_proxy_session()
-
-
-goodproxies = proxysession.query(Proxys).filter(Proxys.canreachsite == True).filter(Proxys.google == True).all()
-
-
 
 results = []
-
 
 for _ in range(0, 1500):
 
