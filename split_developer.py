@@ -15,8 +15,8 @@ for app in appurls:
     adeveloper.address = app.address
     app.thedveloper = adeveloper
     app.developer = None
-    adeveloper.devwebsite = None
-    adeveloper.address = None
+    app.devwebsite = None
+    app.address = None
     app.thedeveloper = adeveloper
 
 session.commit()
