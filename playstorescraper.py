@@ -3,7 +3,7 @@
 # https://pypi.org/project/requests-tor/
 # https://androidapksfree.com/
 
-from models import Appurl, Playstoreapp, Genre
+from models import Appurl, Playstoreapp, Genre, Developer
 from proxy_model import Proxys
 
 from sqlalchemy import create_engine
@@ -47,15 +47,19 @@ def process_results(multy):
     else:
         print("use existing")
 
+    if not playstoreapp.thedeveloper:
+        playstoreapp.thedeveloper = Developer()
+        playstoreapp.thedeveloper.name = result['developer']
+        if result['developerWebsite']:
+            playstoreapp.thedeveloper.devwebsite = result['developerWebsite'][:127]
+        if result['developerAddress']:
+            playstoreapp.thedeveloper.address = result['developerAddress'][:127]
+
     playstoreapp.appid = result['appId']
     playstoreapp.downloads = result['minInstalls']
     playstoreapp.rating = result['score']
     playstoreapp.reviews = result['reviews']
-    playstoreapp.developer = result['developer']
-    if result['developerWebsite']:
-        playstoreapp.devwebsite = result['developerWebsite'][:127]
-    if result['developerAddress']:
-        playstoreapp.address = result['developerAddress'][:127]
+
     playstoreapp.adds = result['adSupported']
     playstoreapp.title = result['title']
     playstoreapp.inapp = result['offersIAP']
