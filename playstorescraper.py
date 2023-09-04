@@ -47,14 +47,17 @@ def process_results(multy):
     else:
         print("use existing")
 
-    if not playstoreapp.thedeveloper:
-        playstoreapp.thedeveloper = Developer()
-        playstoreapp.thedeveloper.name = result['developer']
+    thedeveloper = session.query(Developer).filter(Developer.name == result['developer']).first()
+    if not thedeveloper:
+        thedeveloper = Developer()
+        thedeveloper.name = result['developer']
         if result['developerWebsite']:
-            playstoreapp.thedeveloper.devwebsite = result['developerWebsite'][:127]
+            thedeveloper.devwebsite = result['developerWebsite'][:127]
         if result['developerAddress']:
-            playstoreapp.thedeveloper.address = result['developerAddress'][:127]
+            thedeveloper.address = result['developerAddress'][:127]
 
+
+    playstoreapp.thedeveloper = thedeveloper
     playstoreapp.appid = result['appId']
     playstoreapp.downloads = result['minInstalls']
     playstoreapp.rating = result['score']
