@@ -130,7 +130,7 @@ session = make_session()
 
 results = []
 
-for _ in range(0, 1500):
+while True:
 
     print("getting app ids")
     crawls = (session
