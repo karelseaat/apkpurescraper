@@ -125,7 +125,7 @@ appurls = session.query(Appurl).all()
 allids = set([crc64.ecma_182(appurl.appid.encode()) for appurl in appurls])
 
 allapps = []
-allpages = generate_stadard_pages(10)
+allpages = generate_stadard_pages(5)
 
 for page in allpages:
     allapps += run(page)
