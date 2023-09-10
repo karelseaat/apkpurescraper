@@ -72,7 +72,7 @@ allids = set([crc64.ecma_182(appurl.appid.encode()) for appurl in appurls])
 
 
 threads = []
-limits = 2
+limits = 10
 drivers = []
 
 for i in range(limits):
