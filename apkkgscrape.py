@@ -72,7 +72,7 @@ allids = set([crc64.ecma_182(appurl.appid.encode()) for appurl in appurls])
 
 
 threads = []
-limits = 10
+limits = 1 
 drivers = []
 
 for i in range(limits):
@@ -87,7 +87,7 @@ for i in range(limits):
 
 while True:
     nowtime = datetime.now()
-    results = session.query(Appurl).filter(Appurl.done.is_(None)).filter(Appurl.appurl.like('%apkpure.com%')).order_by(func.random()).limit(200).all()
+    results = session.query(Appurl).filter(Appurl.done.is_(None)).order_by(func.random()).limit(50).all()
     latertime = datetime.now()
 
     print("query time: " + str((latertime-nowtime).total_seconds()))

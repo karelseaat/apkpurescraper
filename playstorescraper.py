@@ -18,8 +18,7 @@ import random
 from google_play_scraper.features.app import parse_dom
 import requests
 from common import make_session
-
-# from fastcrc import crc64
+#from fastcrc import crc64
 
 import json
 
@@ -55,7 +54,7 @@ def process_results(multy):
             thedeveloper.devwebsite = result['developerWebsite'][:127]
         if result['developerAddress']:
             thedeveloper.address = result['developerAddress'][:127]
-
+        session.add(thedeveloper)
 
     playstoreapp.thedeveloper = thedeveloper
     playstoreapp.appid = result['appId']
@@ -92,8 +91,6 @@ def process_results(multy):
 
 def get_raw(url):
 
-
-
     # proxydict = {"https":f"{proxy.proto}://{proxy.ip}:{proxy.port}"}
     try:
         result = requests.get(url)
@@ -114,6 +111,7 @@ def crawlapage(page):
 
     url = f"https://play.google.com/store/apps/details?id={page.appid}"
     result = get_raw(url)
+
 
     if result[0]:
         return parse_dom(result[1].text, page.appid, url)
@@ -136,7 +134,7 @@ while True:
     crawls = (session
             .query(Appurl)
             .order_by(Appurl.lastplaycrawl)
-            .limit(100)
+            .limit(10)
             .all()
         )
 

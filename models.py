@@ -16,7 +16,6 @@ class Appurl(Base):
     appid = Column(String(128), nullable=False, unique=True)
     appurl = Column(String(128), nullable=False)
     done = Column(DateTime)
-    # inplaystore = Column(Boolean, default=False)
     lastplaycrawl = Column(DateTime)
     playstoreapp_id = Column(ForeignKey('playstoreapp.id'), index=True)
     playstoreapp = relationship('Playstoreapp', back_populates="rawapp")
@@ -48,7 +47,7 @@ class Playstoreapp(Base):
     address = Column(String(128), nullable=True)
     size = Column(Integer)
 
-    developer_id = Column(Integer, ForeignKey('developer.id'))
+    developer_id = Column(Integer, ForeignKey('developer.id'), nullable=True)
 
     genres = relationship(
         "Genre",
@@ -57,6 +56,7 @@ class Playstoreapp(Base):
     )
 
     rawapp = relationship('Appurl', back_populates="playstoreapp")
+    #thedeveloper = relationship('Developer', back_populates='apps')
 
 class Genre(Base):
     __tablename__ = 'genre'

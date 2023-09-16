@@ -4,7 +4,7 @@ from models import Base
 
 def make_session():
     engine = create_engine("mysql+pymysql://root:kateobele@192.168.2.123/apkscraper?charset=utf8mb4", echo=False)
-    dbsession = scoped_session(sessionmaker(bind=engine))
+    dbsession = scoped_session(sessionmaker(bind=engine, autoflush=False))
     Base.metadata.create_all(engine)
     return dbsession()
 
