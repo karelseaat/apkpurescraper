@@ -11,5 +11,5 @@ devs = session.query(Developer).group_by(Developer.name).having(func.count(Devel
 #print(appurls)
 for dev in devs:
     session.delete(dev)
-    session.commit()
-    print(dev)
+
+session.commit()

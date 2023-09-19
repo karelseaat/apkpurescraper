@@ -102,6 +102,7 @@ while True:
             session.add(result)
             thread = myThread(result, drivers[index])
             threads.append(thread)
+            time.sleep(5)
             thread.start()
 
 

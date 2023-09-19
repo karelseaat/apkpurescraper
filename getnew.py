@@ -73,6 +73,30 @@ def generate_stadard_pages(number):
     pages +=[f"{defurl}weather?page={x}&sort=new" for x in range(1, number+1)]
     return pages
 
+def generate_fdroid_pages(number):
+    defurl  = "https://f-droid.org/en/"
+    pages = [f"{defurl}categories/connectivity/{x}/index.html" for x in range(2, number+2)]
+    pages += [f"{defurl}categories/development/{x}/index.html" for x in range(2, number+2)]
+    pages += [f"{defurl}categories/games/{x}/index.html" for x in range(2, number+2)]
+    pages += [f"{defurl}categories/graphics/{x}/index.html" for x in range(2, number+2)]
+    pages += [f"{defurl}categories/internet/{x}/index.html" for x in range(2, number+2)]
+    pages += [f"{defurl}categories/money/{x}/index.html" for x in range(2, number+2)]
+    pages += [f"{defurl}categories/multymedia/{x}/index.html" for x in range(2, number+2)]
+    pages += [f"{defurl}categories/navigation/{x}/index.html" for x in range(2, number+2)]
+    pages += [f"{defurl}categories/phone-sms/{x}/index.html" for x in range(2, number+2)]
+    pages += [f"{defurl}categories/reading/{x}/index.html" for x in range(2, number+2)]
+    pages += [f"{defurl}categories/science-education/{x}/index.html" for x in range(2, number+2)]
+    pages += [f"{defurl}categories/security/{x}/index.html" for x in range(2, number+2)]
+    pages += [f"{defurl}categories/sports-health/{x}/index.html" for x in range(2, number+2)]
+    pages += [f"{defurl}categories/system/{x}/index.html" for x in range(2, number+2)]
+    pages += [f"{defurl}categories/theming/{x}/index.html" for x in range(2, number+2)]
+    pages += [f"{defurl}categories/time/{x}/index.html" for x in range(2, number+2)]
+    pages += [f"{defurl}categories/writing/{x}/index.html" for x in range(2, number+2)]
+    return pages
+
+
+
+
 def integrate(listofapps):
     for app in listofapps:
         session.add(app)
@@ -96,7 +120,7 @@ def run(page):
             thesplit = "0"
             thehref = ""
 
-
+        print(thehref, thesplit)
         if re.search("^.*\..*\/*.\/.*\..*\.[a-zA-Z0-9]*$", thehref) and len(thesplit) == 5:
 
             appid = thehref.split("/")[-1]
@@ -107,6 +131,31 @@ def run(page):
                 appurls.append(anewurl)
                 allids.add(crc64.ecma_182(appid.encode()))
                 anewurl.appurl = thehref
+                anewurl.appid = appid
+    return appurls
+
+def alt_run(page):
+    driver.get(page)
+    appurls = []
+
+    klont = driver.find_elements(By.XPATH, '//a')
+    for element in klont:
+        try:
+            thehref = str(element.get_attribute('href'))
+            thesplit = thehref.split("/")
+        except Exception as e:
+            thesplit = "0"
+            thehref = ""
+        
+        if len(thesplit) == 7 and re.search("^.*\..*\..*$", thesplit[5]):
+
+            appid = thesplit[5]
+            if not crc64.ecma_182(appid.encode()) in allids and len(appid) < 128:
+
+                anewurl = Appurl()
+                appurls.append(anewurl)
+                allids.add(crc64.ecma_182(appid.encode()))
+                anewurl.appurl = appid
                 anewurl.appid = appid
 
 
@@ -126,9 +175,12 @@ allids = set([crc64.ecma_182(appurl.appid.encode()) for appurl in appurls])
 
 allapps = []
 allpages = generate_stadard_pages(5)
+allpages += generate_fdroid_pages(5)
+
 
 for page in allpages:
-    allapps += run(page)
+    #print(page)
+    allapps += alt_run(page)
 
 
 integrate(allapps)

@@ -54,7 +54,7 @@ def process_results(multy):
             thedeveloper.devwebsite = result['developerWebsite'][:127]
         if result['developerAddress']:
             thedeveloper.address = result['developerAddress'][:127]
-        session.add(thedeveloper)
+        #session.add(thedeveloper)
 
     playstoreapp.thedeveloper = thedeveloper
     playstoreapp.appid = result['appId']
