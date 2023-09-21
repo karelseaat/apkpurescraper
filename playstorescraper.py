@@ -72,7 +72,9 @@ def process_results(multy):
     if not genre:
         genre = Genre()
         genre.name = result['genre']
-    playstoreapp.genres.append(genre)
+
+    if genre.name:
+        playstoreapp.genres.append(genre)
 
     if result['released']:
         playstoreapp.releasedon = datetime.strptime(result['released'], '%b %d, %Y')

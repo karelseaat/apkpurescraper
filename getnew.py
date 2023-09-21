@@ -94,14 +94,19 @@ def generate_fdroid_pages(number):
     pages += [f"{defurl}categories/writing/{x}/index.html" for x in range(2, number+2)]
     return pages
 
+def generate_brain_pages(number):
+    defurl = "https://www.appbrain.com/apps/"
+    pages = [f"{defurl}hot/?o={x}" for x in range(0, number+1)]
+    pages += [f"{defurl}hot/apps/updated/?o={x}" for x in range(0, number+1)]
+    pages += [f"{defurl}hot/apps/new/?o={x}" for x in range(0, number+1)]
 
+    return pages
 
 
 def integrate(listofapps):
     for app in listofapps:
         session.add(app)
         allids.add(app.appid)
-        print(app.appid)
 
     session.commit()
 
@@ -120,7 +125,6 @@ def run(page):
             thesplit = "0"
             thehref = ""
 
-        print(thehref, thesplit)
         if re.search("^.*\..*\/*.\/.*\..*\.[a-zA-Z0-9]*$", thehref) and len(thesplit) == 5:
 
             appid = thehref.split("/")[-1]
@@ -155,9 +159,37 @@ def alt_run(page):
                 anewurl = Appurl()
                 appurls.append(anewurl)
                 allids.add(crc64.ecma_182(appid.encode()))
-                anewurl.appurl = appid
+                anewurl.appurl = thehref
                 anewurl.appid = appid
 
+
+    return appurls
+
+
+def brain_run(page):
+    driver.get(page)
+    appurls = []
+
+    klont = driver.find_elements(By.XPATH, '//a')
+    for element in klont:
+        try:
+            thehref = str(element.get_attribute('href'))
+            thesplit = thehref.split("/")
+        except Exception as e:
+            thesplit = "0"
+            thehref = ""
+        
+        
+        if len(thesplit) == 6 and re.search("^.*\..*\..*$", thesplit[5]):
+
+            appid = thesplit[5]
+            if not crc64.ecma_182(appid.encode()) in allids and len(appid) < 128:
+
+                anewurl = Appurl()
+                appurls.append(anewurl)
+                allids.add(crc64.ecma_182(appid.encode()))
+                anewurl.appurl = thehref
+                anewurl.appid = appid
 
     return appurls
 
@@ -174,14 +206,22 @@ appurls = session.query(Appurl).all()
 allids = set([crc64.ecma_182(appurl.appid.encode()) for appurl in appurls])
 
 allapps = []
-allpages = generate_stadard_pages(5)
-allpages += generate_fdroid_pages(5)
+
+for page in generate_stadard_pages(5):
+    temp = run(page)
+    print(f"num of standard{len(temp)}")
+    allapps += temp
 
 
-for page in allpages:
-    #print(page)
-    allapps += alt_run(page)
+for page in generate_fdroid_pages(8):
+    temp = alt_run(page)
+    print(f"num of fdroid{len(temp)}")
+    allapps += temp
 
+for page in generate_brain_pages(10):
+    temp = brain_run(page)
+    print(f"num of brain{len(temp)}")
+    allapps += temp
 
 integrate(allapps)
 
