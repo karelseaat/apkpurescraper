@@ -128,9 +128,8 @@ def run(page):
         if re.search("^.*\..*\/*.\/.*\..*\.[a-zA-Z0-9]*$", thehref) and len(thesplit) == 5:
 
             appid = thehref.split("/")[-1]
-
+            
             if not crc64.ecma_182(appid.encode()) in allids and len(appid) < 128:
-
                 anewurl = Appurl()
                 appurls.append(anewurl)
                 allids.add(crc64.ecma_182(appid.encode()))
@@ -195,9 +194,11 @@ def brain_run(page):
 
 session = make_session()
 options = Options()
+
 options.add_argument("--headless")
 options.add_argument('--blink-settings=imagesEnabled=false')
 
+options.set_preference("permissions.default.image", 2)
 driver = webdriver.Firefox(
     options=options
 )
@@ -207,21 +208,23 @@ allids = set([crc64.ecma_182(appurl.appid.encode()) for appurl in appurls])
 
 allapps = []
 
-for page in generate_stadard_pages(5):
-    temp = run(page)
-    print(f"num of standard{len(temp)}")
+for app in generate_stadard_pages(2):
+    temp = run(app)
     allapps += temp
 
+print(f"num of standard: {len(temp)}")
 
-for page in generate_fdroid_pages(8):
-    temp = alt_run(page)
-    print(f"num of fdroid{len(temp)}")
+for app in generate_fdroid_pages(10):
+    temp = alt_run(app)
     allapps += temp
 
-for page in generate_brain_pages(10):
-    temp = brain_run(page)
-    print(f"num of brain{len(temp)}")
+print(f"num of froid: {len(temp)}")
+
+for app in generate_brain_pages(10):
+    temp = brain_run(app)
     allapps += temp
+
+print(f"num of brain: {len(temp)}")
 
 integrate(allapps)
 

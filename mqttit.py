@@ -19,3 +19,4 @@ listo = [app.appid for app in results]
 blaat.publish("storescraper/scraperrella", ",".join(listo))
 
 
+#blaat.publish("storescraper/scraperrella", "blemp")

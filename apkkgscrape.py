@@ -72,14 +72,17 @@ allids = set([crc64.ecma_182(appurl.appid.encode()) for appurl in appurls])
 
 
 threads = []
-limits = 1 
+limits = 6
 drivers = []
+getrows = 50
 
 for i in range(limits):
     print(i)
     options = Options()
     options.add_argument("--headless")
     options.add_argument('--blink-settings=imagesEnabled=false')
+    options.set_preference("permissions.default.image", 2)
+    options.set_preference("browser.display.use_document_fonts", 0)
     driver = webdriver.Firefox(options=options)
     drivers.append(driver)
     driver.set_page_load_timeout(10)
@@ -87,13 +90,13 @@ for i in range(limits):
 
 while True:
     nowtime = datetime.now()
-    results = session.query(Appurl).filter(Appurl.done.is_(None)).order_by(func.random()).limit(50).all()
+    results = session.query(Appurl).filter(Appurl.done.is_(None)).filter(Appurl.appurl.like("%https%")).order_by(func.random()).limit(getrows).all()
     latertime = datetime.now()
 
     print("query time: " + str((latertime-nowtime).total_seconds()))
 
     nowtime = datetime.now()
-
+    totalinsert = 0
 
     for subarray in split_it(results, limits):
 
@@ -102,7 +105,6 @@ while True:
             session.add(result)
             thread = myThread(result, drivers[index])
             threads.append(thread)
-            time.sleep(5)
             thread.start()
 
 
@@ -114,9 +116,11 @@ while True:
             allresults += t.value
 
         latertime = datetime.now()
+        integrated = integrate(allresults)
+        totalinsert += integrated
+        print("join seconds: " + str((latertime-nowtime).total_seconds()), " total rsults: " + str(integrated))
 
-        print("join seconds: " + str((latertime-nowtime).total_seconds()), " total rsults: " + str(integrate(allresults)))
-
+    print(f"total got: {getrows} totalinserts: {totalinsert} ratio: {totalinsert/getrows}")
     nowtime = datetime.now()
     session.commit()
     latertime = datetime.now()

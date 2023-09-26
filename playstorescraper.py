@@ -18,7 +18,6 @@ import random
 from google_play_scraper.features.app import parse_dom
 import requests
 from common import make_session
-#from fastcrc import crc64
 
 import json
 
@@ -38,7 +37,6 @@ def textmult(text):
 def process_results(multy):
 
     result, page = multy
-
     playstoreapp = session.query(Playstoreapp).filter(Playstoreapp.appid == result['appId']).first()
     if not playstoreapp:
         playstoreapp = Playstoreapp()
@@ -114,7 +112,6 @@ def crawlapage(page):
     url = f"https://play.google.com/store/apps/details?id={page.appid}"
     result = get_raw(url)
 
-
     if result[0]:
         return parse_dom(result[1].text, page.appid, url)
     elif result[1] == 2:
@@ -143,6 +140,7 @@ while True:
     print("clawling app ids")
     for crawl in crawls:
         result = crawlapage(crawl)
+        pprint(result)
         crawl.lastplaycrawl = datetime.now()
         if result:
             results.append((result, crawl))

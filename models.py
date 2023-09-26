@@ -76,3 +76,4 @@ class Developer(Base):
     name = Column(String(128), nullable=False)
     devwebsite = Column(String(128))
     address = Column(String(128))
+    crawledat = Column(DateTime)
