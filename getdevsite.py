@@ -48,17 +48,19 @@ def get_all_urls(adev):
 while True:
     devstocrawl = session.query(Developer).filter(Developer.devwebsite.isnot(None)).order_by(Developer.crawledat).limit(100).all()
     for dev in devstocrawl:
-        appids = get_all_urls(dev)
+        appids = list(set(get_all_urls(dev)))
         
         dev.crawledat = datetime.now()
         for app in appids:
             crced = crc64.ecma_182(app.encode())
-            if crced not in allids:
-                print(app)
+            if crced not in allids and len(app) < 128:
+                print(f"app insert {app}")
                 allids.add(crced)
                 newapp = Appurl()
                 newapp.appid = app
                 session.add(newapp)
+            else:
+                print(f"nope for {app}")
 
 
                 
