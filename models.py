@@ -10,15 +10,25 @@ from sqlalchemy.ext.hybrid import hybrid_property
 Base = declarative_base(name="Base")
 metadata = Base.metadata
 
-class Appurl(Base):
-    __tablename__ = 'rankingapp'
+
+class Newappurl(Base):
+    __tablename__ = 'newappurl'
     id = Column(Integer, primary_key=True)
-    appid = Column(String(128), nullable=False, unique=True)
-    appurl = Column(String(128), nullable=False)
-    done = Column(DateTime)
+    appid= Column(String(150), nullable=False)
     lastplaycrawl = Column(DateTime)
-    playstoreapp_id = Column(ForeignKey('playstoreapp.id'), index=True)
-    playstoreapp = relationship('Playstoreapp', back_populates="rawapp")
+#    playstoreapp_id = Column(ForeignKey('Playstoreapp'), index=True)
+#    playstoreapp = relationship('Playstoreapp', back_populates="rawapp")
+
+
+#class Appurl(Base):
+#    __tablename__ = 'rankingapp'
+#    id = Column(Integer, primary_key=True)
+#    appid = Column(String(128), nullable=False, unique=True)
+#    appurl = Column(String(128), nullable=False)
+#    done = Column(DateTime)
+#    lastplaycrawl = Column(DateTime)
+#    playstoreapp_id = Column(ForeignKey('playstoreapp.id'), index=True)
+#    playstoreapp = relationship('Playstoreapp', back_populates="rawapp")
 
 
 app_genre_association = Table('appgenre', Base.metadata,
@@ -55,7 +65,7 @@ class Playstoreapp(Base):
         back_populates="apps",
     )
 
-    rawapp = relationship('Appurl', back_populates="playstoreapp")
+    #rawapp = relationship('Newappurl', back_populates="playstoreapp")
     #thedeveloper = relationship('Developer', back_populates='apps')
 
 class Genre(Base):

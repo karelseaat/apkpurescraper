@@ -1,16 +1,13 @@
 #!./venv/bin/python3
 
-# https://pypi.org/project/requests-tor/
-# https://androidapksfree.com/
 
-from models import Appurl, Playstoreapp, Genre, Developer
-from proxy_model import Proxys
+from models import Playstoreapp, Genre, Developer, Newappurl
+#from proxy_model import Proxys
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 from models import Base
 import time
-from pprint import pprint
 
 from datetime import datetime, timedelta
 from google_play_scraper import app
@@ -84,9 +81,9 @@ def process_results(multy):
         playstoreapp.about = result['description'][:255]
     playstoreapp.price = result['price']
 
-    page.playstoreapp = playstoreapp
+    #page.playstoreapp = playstoreapp
 
-    session.add(page)
+    session.add(playstoreapp)
 
 
 def get_raw(url):
@@ -131,8 +128,8 @@ while True:
 
     print("getting app ids")
     crawls = (session
-            .query(Appurl)
-            .order_by(Appurl.lastplaycrawl)
+            .query(Newappurl)
+            .order_by(Newappurl.lastplaycrawl)
             .limit(10)
             .all()
         )
@@ -140,7 +137,6 @@ while True:
     print("clawling app ids")
     for crawl in crawls:
         result = crawlapage(crawl)
-        pprint(result)
         crawl.lastplaycrawl = datetime.now()
         if result:
             results.append((result, crawl))
