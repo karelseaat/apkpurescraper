@@ -39,7 +39,7 @@ app_genre_association = Table('appgenre', Base.metadata,
 class Playstoreapp(Base):
     __tablename__ = 'playstoreapp'
     id = Column(Integer, primary_key=True)
-    appid = Column(String(128), nullable=False)
+    appid = Column(String(150), nullable=False)
     downloads = Column(BigInteger)
     reviews = Column(Integer)
     rating = Column(Integer)
