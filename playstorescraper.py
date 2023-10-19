@@ -143,7 +143,7 @@ while True:
             print(f"{crawl.appid} = Good")
         else:
             print(f"{crawl.appid} = No good !")
-        time.sleep(1.5)
+        time.sleep(1)
 
 
     print("crawl done, processing results")
