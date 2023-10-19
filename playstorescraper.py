@@ -37,9 +37,6 @@ def process_results(multy):
     playstoreapp = session.query(Playstoreapp).filter(Playstoreapp.appid == result['appId']).first()
     if not playstoreapp:
         playstoreapp = Playstoreapp()
-        print("insert new")
-    else:
-        print("use existing")
 
     thedeveloper = session.query(Developer).filter(Developer.name == result['developer']).first()
     if not thedeveloper:
