@@ -7,6 +7,7 @@ from models import Newappurl
 
 from common import make_session
 from fastcrc import crc64
+import time
 
 allcollectionfiles = []
 allplaystoreappids = []
@@ -40,6 +41,7 @@ for idx, onecol in enumerate(allcollectionfiles):
         soup = BeautifulSoup("", "lxml")
     
     print(f"index of source list: {idx} of {len(allcollectionfiles)} uniqe inserted recs: {len(allids)}")
+    time.sleep(5)
         
     for link in  soup.find_all('xhtml:link'):
         temp = link['href']
