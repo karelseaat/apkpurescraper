@@ -61,7 +61,3 @@ for idx, onecol in enumerate(allcollectionfiles):
         print("An exception occurred" ) 
 
 session.close()
-
-#with open("resultfile.txt","w") as f:
-#    for link in allplaystorelinks:
-#        f.write(f"{link}\n")

@@ -134,8 +134,8 @@ while True:
     print("clawling app ids")
     for crawl in crawls:
         result = crawlapage(crawl)
-        crawl.lastplaycrawl = datetime.now()
         if result:
+            crawl.lastplaycrawl = datetime.now()
             results.append((result, crawl))
             print(f"{crawl.appid} = Good")
         else:
