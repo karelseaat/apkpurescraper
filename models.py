@@ -43,6 +43,7 @@ class Playstoreapp(Base):
     devwebsite = Column(String(128), nullable=True)
     address = Column(String(128), nullable=True)
     size = Column(Integer)
+    removedfromstore = Column(Boolean, default=False)
 
     developer_id = Column(Integer, ForeignKey('developer.id'), nullable=True)
 
