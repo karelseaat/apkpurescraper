@@ -37,12 +37,12 @@ class Playstoreapp(Base):
     lastupdate = Column(DateTime)
     about = Column(String(256))
     price = Column(Integer)
-    lastcrawled = Column(DateTime, default=datetime.datetime.now())
     releasedon = Column(DateTime)
     icon = Column(String(128))
     devwebsite = Column(String(128), nullable=True)
     address = Column(String(128), nullable=True)
     size = Column(Integer)
+    removedfromstore = Column(Boolean, default=False)
 
     developer_id = Column(Integer, ForeignKey('developer.id'), nullable=True)
 

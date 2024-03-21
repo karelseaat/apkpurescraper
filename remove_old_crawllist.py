@@ -11,7 +11,6 @@ from datetime import datetime, timedelta
 from common import make_session
 
 mothsago = datetime.now() - timedelta(30 * 6)
-print(mothsago)
 
 session = make_session()
 results = session.query(Newappurl).filter(Newappurl.lastplaycrawl < mothsago).all()
