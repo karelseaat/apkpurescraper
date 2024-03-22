@@ -1,6 +1,6 @@
 #!./venv/bin/python3
 
-
+from sqlalchemy.sql import exists
 from models import Newappurl, Playstoreapp
 
 from sqlalchemy import create_engine
@@ -9,9 +9,12 @@ from sqlalchemy import delete
 
 from datetime import datetime, timedelta
 from common import make_session
+import random
+
+
+session = make_session()
 
 mothsago = datetime.now() - timedelta(30 * 6)
-session = make_session()
 results = session.query(Newappurl).filter(Newappurl.lastplaycrawl < mothsago).limit(10000).all()
 
 appids = [result.appid for result in results]
@@ -19,12 +22,20 @@ appids = [result.appid for result in results]
 for result in results:
     session.delete(result)
 
-print(appids)
 
 results = session.query(Playstoreapp).where(Playstoreapp.appid.in_(appids)).all()
 for result in results:
     result.removedfromstore = True
 
 session.commit()
+session.close()
+
+session = make_session()
+#------------------------------------
+subquerry = session.query(Newappurl.appid).all()
+q = session.query(Playstoreapp).filter(Playstoreapp.appid.not_in(subquerry))
+    
+
+print(q.first())
 
 session.close()
