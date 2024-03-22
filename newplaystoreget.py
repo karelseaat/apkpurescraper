@@ -24,6 +24,10 @@ appurls = session.query(Newappurl).all()
 
 allids = set([crc64.ecma_182(appurl.appid.encode()) for appurl in appurls])
 
+print(sitemaps, len(sitemaps))
+
+quit()
+
 for n in sitemaps:
     results = requests.get(n)
     soup = BeautifulSoup(results.text, 'lxml')
