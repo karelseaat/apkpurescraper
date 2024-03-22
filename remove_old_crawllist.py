@@ -32,10 +32,10 @@ session.close()
 
 session = make_session()
 #------------------------------------
-subquerry = session.query(Newappurl.appid).all()
-q = session.query(Playstoreapp).filter(Playstoreapp.appid.not_in(subquerry))
+subquerry = session.query(Newappurl.appid)
+q = session.query(Playstoreapp).filter(Playstoreapp.appid.not_in(subquerry)).filter(Playstoreapp.removedfromstore == False).delete()
     
 
-print(q.first())
+print(q)
 
 session.close()
