@@ -12,15 +12,16 @@ from common import make_session
 
 mothsago = datetime.now() - timedelta(30 * 6)
 session = make_session()
-results = session.query(Newappurl).filter(Newappurl.lastplaycrawl < mothsago).all()
+results = session.query(Newappurl).filter(Newappurl.lastplaycrawl < mothsago).limit(10000).all()
+
+appids = [result.appid for result in results]
 
 for result in results:
-    result.delete()
+    session.delete(result)
 
-session.commit()
+print(appids)
 
-
-results = session.query(Playstoreapp).filter(Playstoreapp.lastcrawled < mothsago).all()
+results = session.query(Playstoreapp).where(Playstoreapp.appid.in_(appids)).all()
 for result in results:
     result.removedfromstore = True
 
