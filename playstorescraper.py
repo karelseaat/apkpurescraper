@@ -76,16 +76,13 @@ def process_results(multy):
 
     if result['description']:
         playstoreapp.about = result['description'][:255]
-    playstoreapp.price = result['price']
-
-    #page.playstoreapp = playstoreapp
+    playstoreapp.price = result['price']*100
 
     session.add(playstoreapp)
 
 
 def get_raw(url):
 
-    # proxydict = {"https":f"{proxy.proto}://{proxy.ip}:{proxy.port}"}
     try:
         result = requests.get(url)
         if result.status_code != 200:
@@ -97,7 +94,6 @@ def get_raw(url):
         return 0, 2
 
 def crawlapage(page):
-    # global goodproxies
 
     page.lastplaycrawl = datetime.now()
 
@@ -109,7 +105,6 @@ def crawlapage(page):
     if result[0]:
         return parse_dom(result[1].text, page.appid, url)
     elif result[1] == 2:
-        # goodproxies.remove(newproxy)
         return None
     else:
         return None
