@@ -33,10 +33,13 @@ for n in sitemaps:
     for a in elements:
         allcollectionfiles.append(a.get_text())
 
-listlength = round(len(allcollectionfiles)/5)
+listlength = round(len(allcollectionfiles)/6)
 random.shuffle(allcollectionfiles)
 
-for idx, onecol in enumerate(allcollectionfiles[0:listlength]):
+offset = datetime.datetime.now().month%6
+
+
+for idx, onecol in enumerate(allcollectionfiles[offset*listlength:(offset+1)*listlength]):
     result = requests.get(onecol)
     try:
         soup = BeautifulSoup(gzip.decompress(result.content), "lxml")
