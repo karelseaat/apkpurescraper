@@ -122,7 +122,7 @@ while True:
     crawls = (session
             .query(Newappurl)
             .order_by(Newappurl.lastplaycrawl)
-            .limit(100)
+            .limit(500)
             .all()
         )
 
