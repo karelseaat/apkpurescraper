@@ -30,7 +30,6 @@ class Playstoreapp(Base):
     downloads = Column(BigInteger)
     reviews = Column(Integer)
     rating = Column(Integer)
-    developer = Column(String(128), nullable=True)
     inapp = Column(Boolean, default=False)
     adds = Column(Boolean, default=False)
     title = Column(String(256))
