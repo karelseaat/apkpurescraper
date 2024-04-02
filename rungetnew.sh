@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-./newplaystoreget.py
+/home/aat/apkpurescraper/venv/bin/python3 /home/aat/apkpurescraper/newplaystoreget.py

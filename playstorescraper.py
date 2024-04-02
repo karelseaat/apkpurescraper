@@ -76,7 +76,11 @@ def process_results(multy):
 
     if result['description']:
         playstoreapp.about = result['description'][:255]
-    playstoreapp.price = result['price']*100
+
+    if result['price']:
+        playstoreapp.price = result['price']*100
+    else:
+        playstoreapp.price = 0
 
     session.add(playstoreapp)
 
