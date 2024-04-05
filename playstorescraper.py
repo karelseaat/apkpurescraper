@@ -2,7 +2,6 @@
 
 
 from models import Playstoreapp, Genre, Developer, Newappurl
-#from proxy_model import Proxys
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
@@ -41,9 +40,9 @@ def process_results(multy):
     thedeveloper = session.query(Developer).filter(Developer.name == result['developer']).first()
     if not thedeveloper:
         thedeveloper = Developer()
-        thedeveloper.name = result['developer']
-        if result['developerAddress']:
-            thedeveloper.address = result['developerAddress'][:127]
+    thedeveloper.name = result['developer']
+    if result['developerAddress']:
+        thedeveloper.address = result['developerAddress'][:127]
 
     if thedeveloper.name:
         playstoreapp.thedeveloper = thedeveloper
