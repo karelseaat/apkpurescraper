@@ -50,7 +50,7 @@ def process_results(multy):
         playstoreapp.devwebsite = result['developerWebsite']
     playstoreapp.appid = result['appId']
     playstoreapp.downloads = result['minInstalls']
-    playstoreapp.rating = result['score']
+    playstoreapp.rating = result['score'] * 10000000
     playstoreapp.reviews = result['reviews']
 
     playstoreapp.adds = result['adSupported']

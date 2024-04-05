@@ -33,4 +33,4 @@ def crawlapage(appid):
         return None
 
 
-pprint(crawlapage("com.sixdots.alpy"))
+pprint(crawlapage("io.supercent.pizzaidle"))
