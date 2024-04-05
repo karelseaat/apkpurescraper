@@ -42,13 +42,13 @@ def process_results(multy):
     if not thedeveloper:
         thedeveloper = Developer()
         thedeveloper.name = result['developer']
-        if result['developerWebsite']:
-            thedeveloper.devwebsite = result['developerWebsite'][:127]
         if result['developerAddress']:
             thedeveloper.address = result['developerAddress'][:127]
 
     if thedeveloper.name:
         playstoreapp.thedeveloper = thedeveloper
+    if result['developerWebsite']:
+        playstoreapp.devwebsite = result['developerWebsite']
     playstoreapp.appid = result['appId']
     playstoreapp.downloads = result['minInstalls']
     playstoreapp.rating = result['score']

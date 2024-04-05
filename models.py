@@ -67,6 +67,5 @@ class Developer(Base):
     id = Column(Integer, primary_key=True)
     apps = relationship('Playstoreapp', backref='thedeveloper')
     name = Column(String(128), nullable=False)
-    devwebsite = Column(String(128))
     address = Column(String(128))
     crawledat = Column(DateTime)
