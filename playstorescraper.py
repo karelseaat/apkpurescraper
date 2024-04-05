@@ -81,6 +81,8 @@ def process_results(multy):
     else:
         playstoreapp.price = 0
 
+    playstoreapp.removedfromstore = False
+
     session.add(playstoreapp)
 
 
