@@ -29,7 +29,7 @@ class Playstoreapp(Base):
     appid = Column(String(150), nullable=False)
     downloads = Column(BigInteger)
     reviews = Column(Integer)
-    rating = Column(Integer)
+    rating = Column(Integer, default=0)
     inapp = Column(Boolean, default=False)
     adds = Column(Boolean, default=False)
     title = Column(String(256))
