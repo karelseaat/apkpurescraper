@@ -23,7 +23,7 @@ session = make_session()
 
 appurls = session.query(Newappurl).all()
 
-allids = set([crc64.ecma_182(appurl.appid.encode()) for appurl in appurls])
+allids = {crc64.ecma_182(appurl.appid.encode()):appurl for appurl in appurls}
 
 for n in sitemaps:
     results = requests.get(n)
@@ -48,7 +48,7 @@ for idx, onecol in enumerate(allcollectionfiles[offset*listlength:(offset+1)*lis
    
     now = datetime.datetime.now().strftime("%d/%m/%Y, %H:%M:%S")
     print(f"index of source list: {idx} of {listlength} uniqe inserted recs: {len(allids)} Date: {now}")
-    time.sleep(2)
+    time.sleep(1)
     
     tocrawl = soup.find_all('xhtml:link')
     random.shuffle(tocrawl)
@@ -59,12 +59,15 @@ for idx, onecol in enumerate(allcollectionfiles[offset*listlength:(offset+1)*lis
             if "=" in temp2:
                 temp3 = temp2.split("=")[-1]
                 if crc64.ecma_182(temp3.encode()) not in allids:
-                    allids.add(crc64.ecma_182(temp3.encode()))
                     anewappurl = Newappurl()
                     anewappurl.appid = temp3 
                     session.add(anewappurl)
+                    allids.update({crc64.ecma_182(temp3.encode()):anewappurl})
+                else:
+                    allids[crc64.ecma_182(temp3.encode())].lastplaycrawl = datetime.datetime.now()
     try:
         if len(allids) > oldallidslen:
+            print("commiting")
             oldallidslen = len(allids) + 100
             session.commit()
     except:
