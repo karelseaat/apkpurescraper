@@ -49,8 +49,10 @@ for idx, onecol in enumerate(allcollectionfiles[offset*listlength:(offset+1)*lis
     now = datetime.datetime.now().strftime("%d/%m/%Y, %H:%M:%S")
     print(f"index of source list: {idx} of {listlength} uniqe inserted recs: {len(allids)} Date: {now}")
     time.sleep(2)
-        
-    for link in  soup.find_all('xhtml:link'):
+    
+    tocrawl = soup.find_all('xhtml:link')
+    random.shuffle(tocrawl)
+    for link in  tocrawl:
         temp = link['href']
         if "apps" in temp:
             temp2 = temp.split("/")[-1]
