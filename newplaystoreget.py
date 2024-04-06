@@ -64,8 +64,9 @@ for idx, onecol in enumerate(allcollectionfiles[offset*listlength:(offset+1)*lis
                     anewappurl.appid = temp3 
                     session.add(anewappurl)
     try:
+        print("start commiting")
         session.commit()
-        print("commiting")
+        print("commiting done")
     except:
         print("An exception occurred" ) 
 
