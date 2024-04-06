@@ -37,7 +37,7 @@ listlength = round(len(allcollectionfiles)/6)
 random.shuffle(allcollectionfiles)
 
 offset = datetime.datetime.now().month%6
-
+oldallidslen = 0
 
 for idx, onecol in enumerate(allcollectionfiles[offset*listlength:(offset+1)*listlength]):
     result = requests.get(onecol)
@@ -64,9 +64,9 @@ for idx, onecol in enumerate(allcollectionfiles[offset*listlength:(offset+1)*lis
                     anewappurl.appid = temp3 
                     session.add(anewappurl)
     try:
-        print("start commiting")
-        session.commit()
-        print("commiting done")
+        if len(allids) > oldallidslen:
+            oldallidslen = len(allids) + 100
+            session.commit()
     except:
         print("An exception occurred" ) 
 
