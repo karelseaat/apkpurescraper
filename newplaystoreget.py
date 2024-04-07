@@ -36,7 +36,8 @@ for n in sitemaps:
 listlength = round(len(allcollectionfiles)/4)
 random.shuffle(allcollectionfiles)
 
-offset = datetime.datetime.now().isocalendar()[0]%13
+offset = (datetime.datetime.now().isocalendar()[0])%4
+
 oldallidslen = 0
 
 for idx, onecol in enumerate(allcollectionfiles[offset*listlength:(offset+1)*listlength]):
