@@ -33,10 +33,10 @@ for n in sitemaps:
     for a in elements:
         allcollectionfiles.append(a.get_text())
 
-listlength = round(len(allcollectionfiles)/6)
+listlength = round(len(allcollectionfiles)/4)
 random.shuffle(allcollectionfiles)
 
-offset = datetime.datetime.now().month%6
+offset = datetime.datetime.now().isocalendar()[0]%13
 oldallidslen = 0
 
 for idx, onecol in enumerate(allcollectionfiles[offset*listlength:(offset+1)*listlength]):
@@ -72,5 +72,5 @@ for idx, onecol in enumerate(allcollectionfiles[offset*listlength:(offset+1)*lis
             session.commit()
     except:
         print("An exception occurred" ) 
-
+session.commit()
 session.close()
