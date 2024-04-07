@@ -38,7 +38,7 @@ class Playstoreapp(Base):
     price = Column(Integer)
     releasedon = Column(DateTime)
     icon = Column(String(128))
-    devwebsite = Column(String(128), nullable=True)
+    devwebsite = Column(String(256), nullable=True)
     address = Column(String(128), nullable=True)
     removedfromstore = Column(Boolean, default=False)
 
