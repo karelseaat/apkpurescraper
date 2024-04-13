@@ -64,8 +64,6 @@ for idx, onecol in enumerate(allcollectionfiles[offset*listlength:(offset+1)*lis
                     anewappurl.appid = temp3 
                     session.add(anewappurl)
                     allids.update({crc64.ecma_182(temp3.encode()):anewappurl})
-                else:
-                    allids[crc64.ecma_182(temp3.encode())].lastplaycrawl = datetime.datetime.now()
     try:
         if len(allids) > oldallidslen:
             print("commiting")
