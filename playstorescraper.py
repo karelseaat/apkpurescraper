@@ -140,6 +140,11 @@ while True:
             results.append((result, crawl))
             print(f"{crawl.appid} = Good")
         else:
+
+            playstoreapp = session.query(Playstoreapp).filter(Playstoreapp.appid == crawl.appid).first()
+            if playstoreapp:
+                playstoreapp.removedfromstore = True
+            session.delete(crawl)
             print(f"{crawl.appid} = No good !")
         time.sleep(1)
 
