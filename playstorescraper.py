@@ -127,6 +127,7 @@ while True:
     print("getting app ids")
     crawls = (session
             .query(Newappurl)
+            .filter(Newappurl.id % 2 == 0)
             .order_by(Newappurl.lastplaycrawl)
             .limit(500)
             .all()
