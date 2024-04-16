@@ -50,7 +50,7 @@ def process_results(multy):
         playstoreapp.thedeveloper = thedeveloper
     if result['developerWebsite']:
         playstoreapp.devwebsite = result['developerWebsite']
-        urlobject = urlparse(results['developerWebsite'])
+        urlobject = urlparse(result['developerWebsite'])
         thedeveloper.devwebsite = urlobject.hostname
     playstoreapp.appid = result['appId']
     playstoreapp.downloads = result['minInstalls']
