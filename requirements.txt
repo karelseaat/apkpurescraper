@@ -1,15 +1,5 @@
-beautifulsoup4==4.12.3
-bs4==0.0.2
 certifi==2024.2.2
 charset-normalizer==3.3.2
-fastcrc==0.3.0
-greenlet==3.0.3
-idna==3.6
-lxml==5.1.0
-PyMySQL==1.1.0
+idna==3.7
 requests==2.31.0
-soupsieve==2.5
-SQLAlchemy==2.0.28
-SQLAlchemy-Utils==0.41.1
-typing_extensions==4.10.0
 urllib3==2.2.1
