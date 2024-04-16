@@ -7,9 +7,3 @@ def make_session():
     dbsession = scoped_session(sessionmaker(bind=engine, autoflush=False))
     Base.metadata.create_all(engine)
     return dbsession()
-
-def make_proxy_session():
-    engine = create_engine("mysql+pymysql://root:kateobele@localhost/proxymaster?charset=utf8mb4", echo=False)
-    dbsession = scoped_session(sessionmaker(bind=engine))
-    Base.metadata.create_all(engine)
-    return dbsession()
