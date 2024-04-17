@@ -1,0 +1,11 @@
+[Unit]
+Description=A description for your custom service goes here
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/home/aat/apkpurescraper/venv/bin/python /home/aat/apkpurescraper/playstorescraper.py
+TimeoutStartSec=0
+
+[Install]
+WantedBy=default.target

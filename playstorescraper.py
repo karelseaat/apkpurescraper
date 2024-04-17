@@ -14,7 +14,7 @@ import random
 from google_play_scraper.features.app import parse_dom
 import requests
 from common import make_session
-
+from urllib.parse import urlparse
 import json
 
 def textmult(text):
@@ -44,10 +44,14 @@ def process_results(multy):
     if result['developerAddress']:
         thedeveloper.address = result['developerAddress'][:127]
 
+    if result['developerEmail']:
+        thedeveloper.email = result['developerEmail']
     if thedeveloper.name:
         playstoreapp.thedeveloper = thedeveloper
     if result['developerWebsite']:
         playstoreapp.devwebsite = result['developerWebsite']
+        urlobject = urlparse(result['developerWebsite'])
+        thedeveloper.devwebsite = urlobject.hostname
     playstoreapp.appid = result['appId']
     playstoreapp.downloads = result['minInstalls']
     if result['score']:
