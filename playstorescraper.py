@@ -53,7 +53,8 @@ def process_results(multy):
     if result['score']:
         playstoreapp.rating = result['score'] * 10000000
     playstoreapp.reviews = result['reviews']
-
+    if result['video']:
+        playstoreapp.hasvideo = True
     playstoreapp.adds = result['adSupported']
     playstoreapp.title = result['title']
     playstoreapp.inapp = result['offersIAP']
