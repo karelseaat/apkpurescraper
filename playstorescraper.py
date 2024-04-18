@@ -134,7 +134,7 @@ while True:
             .query(Newappurl)
             .filter(Newappurl.id % 2 == one_or_zero)
             .order_by(Newappurl.lastplaycrawl)
-            .limit(500)
+            .limit(1000)
             .all()
         )
 
