@@ -13,7 +13,7 @@ from google_play_scraper import app
 import random
 from google_play_scraper.features.app import parse_dom
 import requests
-from common import make_session
+from common import make_session, one_or_zero
 from urllib.parse import urlparse
 import json
 
@@ -132,7 +132,7 @@ while True:
     print("getting app ids")
     crawls = (session
             .query(Newappurl)
-            .filter(Newappurl.id % 2 == 0)
+            .filter(Newappurl.id % 2 == one_or_zero)
             .order_by(Newappurl.lastplaycrawl)
             .limit(500)
             .all()
