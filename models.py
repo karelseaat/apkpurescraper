@@ -34,7 +34,7 @@ class Playstoreapp(Base):
     adds = Column(Boolean, default=False)
     title = Column(String(256))
     lastupdate = Column(DateTime)
-    about = Column(String(256))
+    about = Column(String(512))
     price = Column(Integer)
     releasedon = Column(DateTime)
     icon = Column(String(128))
