@@ -53,7 +53,7 @@ def process_results(multy):
         urlobject = urlparse(result['developerWebsite'])
         thedeveloper.devwebsite = urlobject.hostname
     playstoreapp.appid = result['appId']
-    playstoreapp.downloads = result['minInstalls']
+    playstoreapp.downloads = result['realInstalls']
     if result['score']:
         playstoreapp.rating = result['score'] * 10000000
     playstoreapp.reviews = result['reviews']
