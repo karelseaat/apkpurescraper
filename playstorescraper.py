@@ -17,17 +17,6 @@ from common import make_session, one_or_zero
 from urllib.parse import urlparse
 import json
 
-def textmult(text):
-    if "K" in text:
-        return int(text[:-1]) * 1000
-    if "M" in text:
-        return int(text[:-1]) * 1000000
-    if "B" in text:
-        return int(text[:-1]) * 1000000000
-    if text:
-        return int(text)
-
-    return 0
 
 
 def process_results(multy):
@@ -140,19 +129,22 @@ while True:
 
     print("clawling app ids")
     for crawl in crawls:
+        curtime = time.time()
         result = crawlapage(crawl)
         if result:
             crawl.lastplaycrawl = datetime.now()
             results.append((result, crawl))
-            print(f"id:{crawl.id} appid:{crawl.appid} = Good")
+            timedelta = time.time() - curtime
+            print(f"id:{crawl.id} appid:{crawl.appid} = Good, timedelta = {timedelta}")
         else:
 
             playstoreapp = session.query(Playstoreapp).filter(Playstoreapp.appid == crawl.appid).first()
             if playstoreapp:
                 playstoreapp.removedfromstore = True
             session.delete(crawl)
-            print(f"id:{crawl.id} appid:{crawl.appid} = No good !")
-        time.sleep(1)
+            timedelta = time.time() - curtime
+            print(f"id:{crawl.id} appid:{crawl.appid} = No Good!!!, timedelta = {timedelta}")
+        time.sleep(1 - timedelta)
 
 
     print("crawl done, processing results")
