@@ -80,7 +80,7 @@ def process_results(multy):
         playstoreapp.lastupdate = datetime.fromtimestamp(int(result['updated']))
 
     if result['description']:
-        playstoreapp.about = result['description'][:255]
+        playstoreapp.about = result['description'][:511]
 
     if result['price']:
         playstoreapp.price = result['price']*100
