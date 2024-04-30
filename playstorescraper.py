@@ -141,7 +141,7 @@ while True:
             .query(Newappurl)
             .filter(Newappurl.id % 2 == one_or_zero)
             .order_by(Newappurl.lastplaycrawl)
-            .limit(1000)
+            .limit(100)
             .all()
         )
 
@@ -161,7 +161,7 @@ while True:
                 playstoreapp.removedfromstore = True
             session.delete(crawl)
             timedelta = time.time() - curtime
-            print(f"id:{crawl.id} appid:{crawl.appid} = Good, timedelta = {timedelta}, crawlnumber = {len(crawls)}/{crawls.index(crawl)}")
+            print(f"id:{crawl.id} appid:{crawl.appid} = notGood!!!, timedelta = {timedelta}, crawlnumber = {len(crawls)}/{crawls.index(crawl)}")
         if timedelta >= 1:
             time.sleep(0.5)
         else:
