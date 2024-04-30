@@ -54,7 +54,7 @@ def process_results(multy):
 
     if result['updated']:
         if not playstoreapp.allupdates:
-            playstoreapp.allupdates = [result['updated'], 123123,  5678568]
+            playstoreapp.allupdates = [result['updated']]
         elif result['updated'] not in playstoreapp.allupdates:
             playstoreapp.allupdates.append(result['updated'])
 
@@ -141,7 +141,7 @@ while True:
             .query(Newappurl)
             .filter(Newappurl.id % 2 == one_or_zero)
             .order_by(Newappurl.lastplaycrawl)
-            .limit(10)
+            .limit(1000)
             .all()
         )
 
