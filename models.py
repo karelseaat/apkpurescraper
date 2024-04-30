@@ -3,7 +3,7 @@
 import datetime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
-from sqlalchemy import Table, Column, ForeignKey, String, Integer, Boolean, Date, DateTime, BigInteger
+from sqlalchemy import Table, Column, ForeignKey, String, Integer, Boolean, Date, DateTime, BigInteger, JSON
 from sqlalchemy_utils import get_hybrid_properties
 from sqlalchemy.ext.hybrid import hybrid_property
 
@@ -34,6 +34,7 @@ class Playstoreapp(Base):
     adds = Column(Boolean, default=False)
     title = Column(String(256))
     lastupdate = Column(DateTime)
+    allupdates = Column(JSON)
     about = Column(String(512))
     summary = Column(String(256))
     price = Column(Integer)

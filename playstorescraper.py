@@ -51,6 +51,14 @@ def process_results(multy):
         thedeveloper.devwebsite = urlobject.hostname
     playstoreapp.appid = result['appId']
     playstoreapp.downloads = result['realInstalls']
+
+    if result['updated']:
+        if not playstoreapp.allupdates:
+            playstoreapp.allupdates = [result['updated'], 123123,  5678568]
+        elif result['updated'] not in playstoreapp.allupdates:
+            playstoreapp.allupdates.append(result['updated'])
+
+
     if result['score']:
         playstoreapp.rating = result['score'] * 10000000
     playstoreapp.reviews = result['reviews']
@@ -133,7 +141,7 @@ while True:
             .query(Newappurl)
             .filter(Newappurl.id % 2 == one_or_zero)
             .order_by(Newappurl.lastplaycrawl)
-            .limit(100)
+            .limit(10)
             .all()
         )
 
