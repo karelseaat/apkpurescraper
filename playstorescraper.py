@@ -1,7 +1,7 @@
 #!./venv/bin/python3
 
 
-from models import Playstoreapp, Genre, Developer, Newappurl
+from models import Playstoreapp, Genre, Developer, Newappurl, Contentrating
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
@@ -26,10 +26,18 @@ def process_results(multy):
     if not playstoreapp:
         playstoreapp = Playstoreapp()
 
+    thecontentrating = session.query(Contentrating).filter(Contentrating.name == result['contentRating']).first()
+    if not thecontentrating:
+        thecontentrating = Contentrating()
+        thecontentrating.name = result['contentRating']
+
+    playstoreapp.contentrating = thecontentrating
+
     thedeveloper = session.query(Developer).filter(Developer.name == result['developer']).first()
     if not thedeveloper:
         thedeveloper = Developer()
-    thedeveloper.name = result['developer']
+        thedeveloper.name = result['developer']
+
     if result['developerAddress']:
         thedeveloper.address = result['developerAddress'][:127]
 
@@ -48,6 +56,8 @@ def process_results(multy):
     playstoreapp.reviews = result['reviews']
     if result['video']:
         playstoreapp.hasvideo = True
+    if result['summary']:
+        playstoreapp.summary = result['summary']
     playstoreapp.adds = result['adSupported']
     playstoreapp.title = result['title']
     playstoreapp.inapp = result['offersIAP']
@@ -123,7 +133,7 @@ while True:
             .query(Newappurl)
             .filter(Newappurl.id % 2 == one_or_zero)
             .order_by(Newappurl.lastplaycrawl)
-            .limit(1000)
+            .limit(100)
             .all()
         )
 
@@ -135,7 +145,7 @@ while True:
             crawl.lastplaycrawl = datetime.now()
             results.append((result, crawl))
             timedelta = time.time() - curtime
-            print(f"id:{crawl.id} appid:{crawl.appid} = Good, timedelta = {timedelta}")
+            print(f"id:{crawl.id} appid:{crawl.appid} = Good, timedelta = {timedelta}, crawlnumber = {len(crawls)}/{crawls.index(crawl)}")
         else:
 
             playstoreapp = session.query(Playstoreapp).filter(Playstoreapp.appid == crawl.appid).first()
@@ -143,8 +153,11 @@ while True:
                 playstoreapp.removedfromstore = True
             session.delete(crawl)
             timedelta = time.time() - curtime
-            print(f"id:{crawl.id} appid:{crawl.appid} = No Good!!!, timedelta = {timedelta}")
-        time.sleep(1 - timedelta)
+            print(f"id:{crawl.id} appid:{crawl.appid} = Good, timedelta = {timedelta}, crawlnumber = {len(crawls)}/{crawls.index(crawl)}")
+        if timedelta >= 1:
+            time.sleep(0.5)
+        else:
+            time.sleep(1 - timedelta)
 
 
     print("crawl done, processing results")

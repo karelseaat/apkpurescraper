@@ -35,15 +35,15 @@ class Playstoreapp(Base):
     title = Column(String(256))
     lastupdate = Column(DateTime)
     about = Column(String(512))
+    summary = Column(String(256))
     price = Column(Integer)
     releasedon = Column(DateTime)
     icon = Column(String(128))
     devwebsite = Column(String(256), nullable=True)
-    address = Column(String(128), nullable=True)
     removedfromstore = Column(Boolean, default=False)
     hasvideo = Column(Boolean, default=False)
     developer_id = Column(Integer, ForeignKey('developer.id'), nullable=True)
-
+    contentrating_id = Column(Integer, ForeignKey('contentrating.id'))
     genres = relationship(
         "Genre",
         secondary=app_genre_association,
@@ -70,3 +70,9 @@ class Developer(Base):
     address = Column(String(128))
     email = Column(String(256))
     devwebsite = Column(String(256))
+
+class Contentrating(Base):
+    __tablename__ = 'contentrating'
+    id = Column(Integer, primary_key=True)
+    name = Column(String(64))
+    apps = relationship('Playstoreapp', backref='contentrating')
