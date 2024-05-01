@@ -14,7 +14,7 @@ import random
 from google_play_scraper.features.app import parse_dom
 import requests
 from common import make_session
-from config import one_or_zero
+from config import one_or_zero, batch_size
 from urllib.parse import urlparse
 import json
 
@@ -144,7 +144,7 @@ while True:
             .query(Newappurl)
             .filter(Newappurl.id % 2 == one_or_zero)
             .order_by(Newappurl.lastplaycrawl)
-            .limit(100)
+            .limit(batch_size)
             .all()
         )
 
