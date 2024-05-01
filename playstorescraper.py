@@ -57,8 +57,10 @@ def process_results(multy):
             playstoreapp.allupdates = [result['updated']]
         elif result['updated'] not in playstoreapp.allupdates:
             playstoreapp.allupdates.append(result['updated'])
-
-
+    if result['version']:
+        playstoreapp.currentversion = result['version']
+    if result['privacyPolicy']:
+        playstoreapp.privacypolicylink = result['privacyPolicy']
     if result['score']:
         playstoreapp.rating = result['score'] * 10000000
     playstoreapp.reviews = result['reviews']
