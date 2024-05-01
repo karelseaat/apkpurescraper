@@ -13,7 +13,8 @@ from google_play_scraper import app
 import random
 from google_play_scraper.features.app import parse_dom
 import requests
-from common import make_session, one_or_zero
+from common import make_session
+from config import one_or_zero
 from urllib.parse import urlparse
 import json
 
@@ -155,7 +156,7 @@ while True:
             crawl.lastplaycrawl = datetime.now()
             results.append((result, crawl))
             timedelta = time.time() - curtime
-            print(f"id:{crawl.id} appid:{crawl.appid} = Good, timedelta = {timedelta}, crawlnumber = {len(crawls)}/{crawls.index(crawl)}")
+            print(f"id:{crawl.id} Good      , timedelta = {round(timedelta, 3)}, crawlnumber = {len(crawls)}/{crawls.index(crawl)} appid:{crawl.appid}")
         else:
 
             playstoreapp = session.query(Playstoreapp).filter(Playstoreapp.appid == crawl.appid).first()
@@ -163,7 +164,7 @@ while True:
                 playstoreapp.removedfromstore = True
             session.delete(crawl)
             timedelta = time.time() - curtime
-            print(f"id:{crawl.id} appid:{crawl.appid} = notGood!!!, timedelta = {timedelta}, crawlnumber = {len(crawls)}/{crawls.index(crawl)}")
+            print(f"id:{crawl.id} notGood!!!, timedelta = {round(timedelta, 3)}, crawlnumber = {len(crawls)}/{crawls.index(crawl)} appid:{crawl.appid}")
         if timedelta >= 1:
             time.sleep(0.5)
         else:
