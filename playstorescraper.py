@@ -52,7 +52,8 @@ def process_results(multy):
         thedeveloper.devwebsite = urlobject.hostname
     playstoreapp.appid = result['appId']
     playstoreapp.downloads = result['realInstalls']
-
+    if result['screenshots']:
+        playstoreapp.screenshotnum = len(result['screenshots'])
     if result['updated']:
         if not playstoreapp.allupdates:
             playstoreapp.allupdates = [result['updated']]

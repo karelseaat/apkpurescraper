@@ -47,6 +47,7 @@ class Playstoreapp(Base):
     contentrating_id = Column(Integer, ForeignKey('contentrating.id'))
     privacypolicylink = Column(String(256))
     currentversion = Column(String(32))
+    screenshotnum = Column(Integer)
     genres = relationship(
         "Genre",
         secondary=app_genre_association,
