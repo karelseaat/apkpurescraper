@@ -13,7 +13,8 @@ from google_play_scraper import app
 import random
 from google_play_scraper.features.app import parse_dom
 import requests
-from common import make_session, one_or_zero
+from common import make_session
+from config import one_or_zero, batch_size
 from urllib.parse import urlparse
 import json
 
@@ -51,14 +52,17 @@ def process_results(multy):
         thedeveloper.devwebsite = urlobject.hostname
     playstoreapp.appid = result['appId']
     playstoreapp.downloads = result['realInstalls']
-
+    if result['screenshots']:
+        playstoreapp.screenshotnum = len(result['screenshots'])
     if result['updated']:
         if not playstoreapp.allupdates:
             playstoreapp.allupdates = [result['updated']]
         elif result['updated'] not in playstoreapp.allupdates:
             playstoreapp.allupdates.append(result['updated'])
-
-
+    if result['version']:
+        playstoreapp.currentversion = result['version']
+    if result['privacyPolicy']:
+        playstoreapp.privacypolicylink = result['privacyPolicy']
     if result['score']:
         playstoreapp.rating = result['score'] * 10000000
     playstoreapp.reviews = result['reviews']
@@ -141,7 +145,7 @@ while True:
             .query(Newappurl)
             .filter(Newappurl.id % 2 == one_or_zero)
             .order_by(Newappurl.lastplaycrawl)
-            .limit(100)
+            .limit(batch_size)
             .all()
         )
 
@@ -153,7 +157,7 @@ while True:
             crawl.lastplaycrawl = datetime.now()
             results.append((result, crawl))
             timedelta = time.time() - curtime
-            print(f"id:{crawl.id} appid:{crawl.appid} = Good, timedelta = {timedelta}, crawlnumber = {len(crawls)}/{crawls.index(crawl)}")
+            print(f"id:{crawl.id} Good      , timedelta = {round(timedelta, 3)}, crawlnumber = {len(crawls)}/{crawls.index(crawl)} appid:{crawl.appid}")
         else:
 
             playstoreapp = session.query(Playstoreapp).filter(Playstoreapp.appid == crawl.appid).first()
@@ -161,7 +165,7 @@ while True:
                 playstoreapp.removedfromstore = True
             session.delete(crawl)
             timedelta = time.time() - curtime
-            print(f"id:{crawl.id} appid:{crawl.appid} = notGood!!!, timedelta = {timedelta}, crawlnumber = {len(crawls)}/{crawls.index(crawl)}")
+            print(f"id:{crawl.id} notGood!!!, timedelta = {round(timedelta, 3)}, crawlnumber = {len(crawls)}/{crawls.index(crawl)} appid:{crawl.appid}")
         if timedelta >= 1:
             time.sleep(0.5)
         else:

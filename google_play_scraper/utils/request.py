@@ -21,7 +21,7 @@ def _urlopen(obj):
 
 
 def post(url: str, data: Union[str, bytes], headers: dict) -> str:
-    return _urlopen(Request(url, data=data, headers=headers))
+    return _urlopen(requests(url, data=data, headers=headers))
 
 
 def get(url: str, proxy) -> str:

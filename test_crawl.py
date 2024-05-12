@@ -1,6 +1,7 @@
 #!./venv/bin/python3
 
 from google_play_scraper.features.app import parse_dom
+
 import requests
 from pprint import pprint
 
@@ -32,5 +33,4 @@ def crawlapage(appid):
     else:
         return None
 
-
-pprint(crawlapage("com.HoYoverse.Nap"))
+pprint(crawlapage("com.sixdots.alpy"))

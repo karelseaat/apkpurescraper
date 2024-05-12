@@ -45,6 +45,9 @@ class Playstoreapp(Base):
     hasvideo = Column(Boolean, default=False)
     developer_id = Column(Integer, ForeignKey('developer.id'), nullable=True)
     contentrating_id = Column(Integer, ForeignKey('contentrating.id'))
+    privacypolicylink = Column(String(256))
+    currentversion = Column(String(32))
+    screenshotnum = Column(Integer)
     genres = relationship(
         "Genre",
         secondary=app_genre_association,
