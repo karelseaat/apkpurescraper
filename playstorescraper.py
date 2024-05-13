@@ -113,6 +113,7 @@ def get_raw(url):
             return 1, result
     except Exception as e:
         print(e)
+        time.sleep(1000)
         return 0, 2
 
 def crawlapage(page):
@@ -126,8 +127,6 @@ def crawlapage(page):
 
     if result[0]:
         return parse_dom(result[1].text, page.appid, url)
-    elif result[1] == 2:
-        return None
     else:
         return None
 
