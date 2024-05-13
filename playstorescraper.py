@@ -61,7 +61,7 @@ def process_results(multy):
             playstoreapp.allupdates.append(result['updated'])
     if result['version']:
         playstoreapp.currentversion = result['version']
-    if result['privacyPolicy'] and len(result['privacyPolicy']) < 512):
+    if result['privacyPolicy'] and len(result['privacyPolicy']) < 512:
         playstoreapp.privacypolicylink = result['privacyPolicy']
     if result['score']:
         playstoreapp.rating = result['score'] * 10000000
