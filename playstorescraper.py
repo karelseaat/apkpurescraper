@@ -59,7 +59,7 @@ def process_results(multy):
             playstoreapp.allupdates = [result['updated']]
         elif result['updated'] not in playstoreapp.allupdates:
             playstoreapp.allupdates.append(result['updated'])
-    if result['version']:
+    if result['version'] and len(result['version']) < 64:
         playstoreapp.currentversion = result['version']
     if result['privacyPolicy'] and len(result['privacyPolicy']) < 512:
         playstoreapp.privacypolicylink = result['privacyPolicy']
