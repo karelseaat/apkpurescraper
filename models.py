@@ -14,14 +14,16 @@ metadata = Base.metadata
 class Newappurl(Base):
     __tablename__ = 'newappurl'
     id = Column(Integer, primary_key=True)
-    appid= Column(String(150), nullable=False)
+    appid = Column(String(150), nullable=False)
     lastplaycrawl = Column(DateTime)
 
 
 app_genre_association = Table('appgenre', Base.metadata,
-    Column('playstoreapp_id', ForeignKey('playstoreapp.id')),
-    Column('genre_id', ForeignKey('genre.id'))
-)
+                              Column('playstoreapp_id',
+                                     ForeignKey('playstoreapp.id')),
+                              Column('genre_id', ForeignKey('genre.id'))
+                              )
+
 
 class Playstoreapp(Base):
     __tablename__ = 'playstoreapp'
@@ -66,6 +68,7 @@ class Genre(Base):
         back_populates="genres",
     )
 
+
 class Developer(Base):
     __tablename__ = 'developer'
     id = Column(Integer, primary_key=True)
@@ -74,6 +77,7 @@ class Developer(Base):
     address = Column(String(128))
     email = Column(String(256))
     devwebsite = Column(String(256))
+
 
 class Contentrating(Base):
     __tablename__ = 'contentrating'

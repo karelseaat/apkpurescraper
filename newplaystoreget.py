@@ -3,7 +3,7 @@
 import requests
 from bs4 import BeautifulSoup
 import gzip
-from models import Newappurl 
+from models import Newappurl
 
 from common import make_session
 from fastcrc import crc64
@@ -23,20 +23,20 @@ session = make_session()
 
 appurls = session.query(Newappurl).all()
 
-allids = {crc64.ecma_182(appurl.appid.encode()):appurl for appurl in appurls}
+allids = {crc64.ecma_182(appurl.appid.encode()): appurl for appurl in appurls}
 
 for n in sitemaps:
     results = requests.get(n)
     soup = BeautifulSoup(results.text, 'lxml')
     elements = soup.find_all('loc')
-    
+
     for a in elements:
         allcollectionfiles.append(a.get_text())
 
 listlength = round(len(allcollectionfiles)/4)
 random.shuffle(allcollectionfiles)
 
-offset = (datetime.datetime.now().isocalendar()[0])%4
+offset = (datetime.datetime.now().isocalendar()[0]) % 4
 
 oldallidslen = 0
 
@@ -46,14 +46,15 @@ for idx, onecol in enumerate(allcollectionfiles[offset*listlength:(offset+1)*lis
         soup = BeautifulSoup(gzip.decompress(result.content), "lxml")
     except Exception:
         soup = BeautifulSoup("", "lxml")
-   
+
     now = datetime.datetime.now().strftime("%d/%m/%Y, %H:%M:%S")
-    print(f"index of source list: {idx} of {listlength} uniqe inserted recs: {len(allids)} Date: {now}")
+    print(
+        f"index of source list: {idx} of {listlength} uniqe inserted recs: {len(allids)} Date: {now}")
     time.sleep(1)
-    
+
     tocrawl = soup.find_all('xhtml:link')
     random.shuffle(tocrawl)
-    for link in  tocrawl:
+    for link in tocrawl:
         temp = link['href']
         if "apps" in temp:
             temp2 = temp.split("/")[-1]
@@ -61,15 +62,15 @@ for idx, onecol in enumerate(allcollectionfiles[offset*listlength:(offset+1)*lis
                 temp3 = temp2.split("=")[-1]
                 if crc64.ecma_182(temp3.encode()) not in allids:
                     anewappurl = Newappurl()
-                    anewappurl.appid = temp3 
+                    anewappurl.appid = temp3
                     session.add(anewappurl)
-                    allids.update({crc64.ecma_182(temp3.encode()):anewappurl})
+                    allids.update({crc64.ecma_182(temp3.encode()): anewappurl})
     try:
         if len(allids) > oldallidslen:
             print("commiting")
             oldallidslen = len(allids) + 100
             session.commit()
     except:
-        print("An exception occurred" ) 
+        print("An exception occurred")
 session.commit()
 session.close()

@@ -21,8 +21,6 @@ def get_raw(url):
 
 def crawlapage(appid):
 
-
-
     url = f"https://play.google.com/store/apps/details?id={appid}"
     result = get_raw(url)
 
@@ -32,5 +30,6 @@ def crawlapage(appid):
         return None
     else:
         return None
+
 
 pprint(crawlapage("com.sixdots.alpy"))

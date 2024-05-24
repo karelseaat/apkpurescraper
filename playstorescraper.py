@@ -19,22 +19,24 @@ from urllib.parse import urlparse
 import json
 
 
-
 def process_results(multy):
 
     result, page = multy
-    playstoreapp = session.query(Playstoreapp).filter(Playstoreapp.appid == result['appId']).first()
+    playstoreapp = session.query(Playstoreapp).filter(
+        Playstoreapp.appid == result['appId']).first()
     if not playstoreapp:
         playstoreapp = Playstoreapp()
 
-    thecontentrating = session.query(Contentrating).filter(Contentrating.name == result['contentRating']).first()
+    thecontentrating = session.query(Contentrating).filter(
+        Contentrating.name == result['contentRating']).first()
     if not thecontentrating:
         thecontentrating = Contentrating()
         thecontentrating.name = result['contentRating']
 
     playstoreapp.contentrating = thecontentrating
 
-    thedeveloper = session.query(Developer).filter(Developer.name == result['developer']).first()
+    thedeveloper = session.query(Developer).filter(
+        Developer.name == result['developer']).first()
     if not thedeveloper:
         thedeveloper = Developer()
         thedeveloper.name = result['developer']
@@ -75,7 +77,6 @@ def process_results(multy):
     playstoreapp.inapp = result['offersIAP']
     playstoreapp.icon = result['icon']
 
-
     genre = session.query(Genre).filter(Genre.name == result['genre']).first()
     if not genre:
         genre = Genre()
@@ -85,10 +86,12 @@ def process_results(multy):
         playstoreapp.genres.append(genre)
 
     if result['released']:
-        playstoreapp.releasedon = datetime.strptime(result['released'], '%b %d, %Y')
+        playstoreapp.releasedon = datetime.strptime(
+            result['released'], '%b %d, %Y')
 
     if result['updated']:
-        playstoreapp.lastupdate = datetime.fromtimestamp(int(result['updated']))
+        playstoreapp.lastupdate = datetime.fromtimestamp(
+            int(result['updated']))
 
     if result['description']:
         playstoreapp.about = result['description'][:511]
@@ -116,6 +119,7 @@ def get_raw(url):
         time.sleep(1000)
         return 0, 2
 
+
 def crawlapage(page):
 
     page.lastplaycrawl = datetime.now()
@@ -131,8 +135,6 @@ def crawlapage(page):
         return None
 
 
-
-
 session = make_session()
 
 results = []
@@ -141,12 +143,12 @@ while True:
 
     print("getting app ids")
     crawls = (session
-            .query(Newappurl)
-            .filter(Newappurl.id % 2 == one_or_zero)
-            .order_by(Newappurl.lastplaycrawl)
-            .limit(batch_size)
-            .all()
-        )
+              .query(Newappurl)
+              .filter(Newappurl.id % 2 == one_or_zero)
+              .order_by(Newappurl.lastplaycrawl)
+              .limit(batch_size)
+              .all()
+              )
 
     print("clawling app ids")
     for crawl in crawls:
@@ -159,7 +161,8 @@ while True:
             print(f"id:{crawl.id} Good      , timedelta = {round(timedelta, 3)}, crawlnumber = {len(crawls)}/{crawls.index(crawl)} appid:{crawl.appid}")
         else:
 
-            playstoreapp = session.query(Playstoreapp).filter(Playstoreapp.appid == crawl.appid).first()
+            playstoreapp = session.query(Playstoreapp).filter(
+                Playstoreapp.appid == crawl.appid).first()
             if playstoreapp:
                 playstoreapp.removedfromstore = True
             session.delete(crawl)
@@ -169,7 +172,6 @@ while True:
             time.sleep(0.5)
         else:
             time.sleep(1 - timedelta)
-
 
     print("crawl done, processing results")
     for result in results:

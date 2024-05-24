@@ -111,7 +111,8 @@ def reviews(
 
     return (
         result,
-        _ContinuationToken(token, lang, country, sort, count, filter_score_with),
+        _ContinuationToken(token, lang, country, sort,
+                           count, filter_score_with),
     )
 
 

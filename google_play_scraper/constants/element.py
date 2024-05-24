@@ -80,7 +80,8 @@ class ElementSpecs:
         "descriptionHTML": ElementSpec(
             5,
             [1, 2],
-            lambda s: nested_lookup(s, [12, 0, 0, 1]) or nested_lookup(s, [72, 0, 1]),
+            lambda s: nested_lookup(
+                s, [12, 0, 0, 1]) or nested_lookup(s, [72, 0, 1]),
         ),
         "summary": ElementSpec(5, [1, 2, 73, 0, 1], unescape_text),
         "installs": ElementSpec(5, [1, 2, 13, 0]),
@@ -102,7 +103,8 @@ class ElementSpecs:
             [0, 0, 0, 0, 0],
         ),
         "price": ElementSpec(
-            5, [1, 2, 57, 0, 0, 0, 0, 1, 0, 0], lambda price: (price / 1000000) or 0
+            5, [1, 2, 57, 0, 0, 0, 0, 1, 0, 0], lambda price: (
+                price / 1000000) or 0
         ),
         "free": ElementSpec(5, [1, 2, 57, 0, 0, 0, 0, 1, 0, 0], lambda s: s == 0),
         "currency": ElementSpec(5, [1, 2, 57, 0, 0, 0, 0, 1, 0, 1]),
@@ -130,7 +132,8 @@ class ElementSpecs:
         "icon": ElementSpec(5, [1, 2, 95, 0, 3, 2]),
         "headerImage": ElementSpec(5, [1, 2, 96, 0, 3, 2]),
         "screenshots": ElementSpec(
-            5, [1, 2, 78, 0], lambda container: [item[3][2] for item in container], []
+            5, [1, 2, 78, 0], lambda container: [item[3][2]
+                                                 for item in container], []
         ),
         "video": ElementSpec(5, [1, 2, 100, 0, 0, 3, 2]),
         "videoImage": ElementSpec(5, [1, 2, 100, 1, 0, 3, 2]),
@@ -193,7 +196,8 @@ class ElementSpecs:
         "appId": ElementSpec(None, [0, 0, 0]),
         "icon": ElementSpec(None, [0, 1, 3, 2]),
         "screenshots": ElementSpec(
-            None, [0, 2], lambda container: [item[3][2] for item in container], []
+            None, [0, 2], lambda container: [item[3][2]
+                                             for item in container], []
         ),
         "title": ElementSpec(None, [0, 3]),
         "score": ElementSpec(None, [0, 4, 1]),

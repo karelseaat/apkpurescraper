@@ -23,12 +23,14 @@ def permissions(app_id: str, lang: str = "en", country: str = "us") -> Dict[str,
         if isinstance(permission_items, list):
             if len(permission_items[0]) == 2:
                 # rearrange layout to fit ElementSpecs
-                permission_items = [["Uncategorized", None, permission_items, None]]
+                permission_items = [
+                    ["Uncategorized", None, permission_items, None]]
 
             for permission in permission_items:
                 if permission:
                     result[
-                        ElementSpecs.Permission_Type.extract_content(permission)
+                        ElementSpecs.Permission_Type.extract_content(
+                            permission)
                     ] = ElementSpecs.Permission_List.extract_content(permission)
 
     return result

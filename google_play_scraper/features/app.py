@@ -17,7 +17,6 @@ def app(app_id: str, lang: str = "en", country: str = "us", proxy="") -> Dict[st
     except Exception as e:
         print(e)
         return None
-    
 
 
 def parse_dom(dom: str, app_id: str, url: str) -> Dict[str, Any]:
