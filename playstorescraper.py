@@ -1,7 +1,7 @@
 #!./venv/bin/python3
 
 
-from models import Playstoreapp, Genre, Developer, Newappurl, Contentrating
+from models import Playstoreapp, Genre, Developer, Newappurl, Contentrating, Snapshot
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
@@ -26,7 +26,8 @@ def process_results(multy):
     playstoreapp = session.query(Playstoreapp).filter(Playstoreapp.appid == result['appId']).first()
     if not playstoreapp:
         playstoreapp = Playstoreapp()
-
+    snapshot = Snapshot()
+    playstoreapp.snapshots.append( snapshot)
     thecontentrating = session.query(Contentrating).filter(Contentrating.name == result['contentRating']).first()
     if not thecontentrating:
         thecontentrating = Contentrating()
@@ -48,32 +49,42 @@ def process_results(multy):
         playstoreapp.thedeveloper = thedeveloper
     if result['developerWebsite']:
         playstoreapp.devwebsite = result['developerWebsite']
+        snapshot.devwebsite = result['developerWebsite']
         urlobject = urlparse(result['developerWebsite'])
         thedeveloper.devwebsite = urlobject.hostname
     playstoreapp.appid = result['appId']
     playstoreapp.downloads = result['realInstalls']
+    snapshot.downloads = result['realInstalls']
+    
     if result['screenshots']:
         playstoreapp.screenshotnum = len(result['screenshots'])
-    if result['updated']:
-        if not playstoreapp.allupdates:
-            playstoreapp.allupdates = [result['updated']]
-        elif result['updated'] not in playstoreapp.allupdates:
-            playstoreapp.allupdates.append(result['updated'])
+        snapshot.screenshotnum = len(result['screenshots'])
     if result['version'] and len(result['version']) < 64:
         playstoreapp.currentversion = result['version']
+        snapshot.version = result['version']
     if result['privacyPolicy'] and len(result['privacyPolicy']) < 512:
         playstoreapp.privacypolicylink = result['privacyPolicy']
+        snapshot.privacypolicylink = result['privacyPolicy']
     if result['score']:
         playstoreapp.rating = result['score'] * 10000000
+        snapshot.rating = result['score'] * 10000000
     playstoreapp.reviews = result['reviews']
+    
+    snapshot.reviews = result['reviews']
     if result['video']:
         playstoreapp.hasvideo = True
+        snapshot.hasvideo = True
     if result['summary']:
         playstoreapp.summary = result['summary']
+        snapshot.summary = result['summary']
     playstoreapp.adds = result['adSupported']
     playstoreapp.title = result['title']
     playstoreapp.inapp = result['offersIAP']
     playstoreapp.icon = result['icon']
+    snapshot.icon = result['icon']
+
+    snapshot.inapp = result['offersIAP']
+    snapshot.adds = result['adSupported']
 
 
     genre = session.query(Genre).filter(Genre.name == result['genre']).first()
@@ -89,14 +100,18 @@ def process_results(multy):
 
     if result['updated']:
         playstoreapp.lastupdate = datetime.fromtimestamp(int(result['updated']))
+        snapshot.lastupdate = datetime.fromtimestamp(int(result['updated']))
 
     if result['description']:
         playstoreapp.about = result['description'][:511]
+        snapshot.about = result['description'][:511]
 
     if result['price']:
         playstoreapp.price = result['price']*100
+        snapshot.price = result['price']*100
     else:
         playstoreapp.price = 0
+        snapshot.price = 0
 
     playstoreapp.removedfromstore = False
 

@@ -23,6 +23,30 @@ app_genre_association = Table('appgenre', Base.metadata,
     Column('genre_id', ForeignKey('genre.id'))
 )
 
+class Snapshot(Base):
+    __tablename__ = 'snapshot'
+    id = Column(Integer, primary_key = True)
+    created = Column(DateTime, default=datetime.datetime.now)
+    downloads = Column(BigInteger)
+    reviews = Column(Integer)
+    rating = Column(Integer)
+    inapp = Column(Boolean, default=False)
+    adds = Column(Boolean, default=False)
+    lastupdate = Column(DateTime)
+    about = Column(String(1024))
+    summary = Column(String(512))
+    price = Column(Integer)
+    version = Column(String(64))
+    screenshotnum = Column(Integer)
+    app_id= Column(Integer, ForeignKey('playstoreapp.id'), nullable=True)
+    privacypolicylink = Column(String(256))
+    icon = Column(String(256))
+    devwebsite = Column(String(256))
+    hasvideo = Column(Boolean, default=False)
+
+
+
+
 class Playstoreapp(Base):
     __tablename__ = 'playstoreapp'
     id = Column(Integer, primary_key=True)
@@ -34,7 +58,6 @@ class Playstoreapp(Base):
     adds = Column(Boolean, default=False)
     title = Column(String(256))
     lastupdate = Column(DateTime)
-    allupdates = Column(JSON)
     about = Column(String(1024))
     summary = Column(String(512))
     price = Column(Integer)
@@ -54,6 +77,7 @@ class Playstoreapp(Base):
         back_populates="apps",
     )
 
+    snapshots = relationship('Snapshot', backref='app')
 
 class Genre(Base):
     __tablename__ = 'genre'
