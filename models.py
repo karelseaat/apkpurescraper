@@ -44,9 +44,6 @@ class Snapshot(Base):
     devwebsite = Column(String(256))
     hasvideo = Column(Boolean, default=False)
 
-
-
-
 class Playstoreapp(Base):
     __tablename__ = 'playstoreapp'
     id = Column(Integer, primary_key=True)
@@ -71,6 +68,8 @@ class Playstoreapp(Base):
     privacypolicylink = Column(String(512))
     currentversion = Column(String(64))
     screenshotnum = Column(Integer)
+    crckey = Column(String(16))
+
     genres = relationship(
         "Genre",
         secondary=app_genre_association,

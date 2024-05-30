@@ -3,6 +3,7 @@
 
 from models import Playstoreapp, Genre, Developer, Newappurl, Contentrating, Snapshot
 
+from fastcrc import crc64
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 from models import Base
@@ -23,9 +24,17 @@ import json
 def process_results(multy):
 
     result, page = multy
+    completeresulttest = f"{result['realInstalls']} {len(result['screenshots'])} {result['version']} {result['privacyPolicy']} {result['score']} {result['reviews']} {result['summary']} {result['adSupported']} {result['title']} {result['offersIAP']} {result['icon']} {result['genre']} {result['released']} {result['updated']} {result['description']} {result['price']}".encode('utf-8')
+    
+    appcrc = hex(crc64.ecma_182(completeresulttest))[2:]
+
     playstoreapp = session.query(Playstoreapp).filter(Playstoreapp.appid == result['appId']).first()
     if not playstoreapp:
         playstoreapp = Playstoreapp()
+    elif playstoreapp.crckey == appcrc:
+        return
+    
+    playstoreapp.crckey = appcrc
     snapshot = Snapshot()
     playstoreapp.snapshots.append( snapshot)
     thecontentrating = session.query(Contentrating).filter(Contentrating.name == result['contentRating']).first()
