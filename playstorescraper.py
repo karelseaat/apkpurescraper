@@ -94,7 +94,7 @@ def process_results(multy):
             int(result['updated']))
 
     if result['description']:
-        playstoreapp.about = result['description'][:1024]
+        playstoreapp.about = result['description'][:3072]
 
     if result['price']:
         playstoreapp.price = result['price']*100
