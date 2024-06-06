@@ -34,6 +34,8 @@ class Playstoreapp(Base):
     rating = Column(Integer, default=0)
     inapp = Column(Boolean, default=False)
     adds = Column(Boolean, default=False)
+    last_classify_timestamp = Column(DateTime)
+    default_lang = Column(String(4))
     title = Column(String(256))
     lastupdate = Column(DateTime)
     allupdates = Column(JSON)
