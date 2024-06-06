@@ -1,3 +1,4 @@
+#!/home/aat/apkpurescraper/venv/bin/python3
 
 from models import Playstoreapp, Newappurl, Developer, Genre
 from sqlalchemy import create_engine
@@ -12,25 +13,18 @@ import datetime
 asession = make_session()
 
 
-thingstodo = True
-
-offset = 0
-batch_size = 1000
-
-while thingstodo:
-
+for i in range(100):
     results = (
         asession.query(Playstoreapp).
         order_by(Playstoreapp.last_classify_timestamp).
-        limit(batch_size).
-        offset(offset).
+        limit(1000).
         all()
     )
 
-    offset += batch_size
     if results:
         for result in results:
-            result.default_lang = langid.classify(result.about)[0]
+            if result.about:
+                result.default_lang = langid.classify(result.about)[0]
             result.last_classify_timestamp = datetime.datetime.now()
     else:
         thingstodo = False
