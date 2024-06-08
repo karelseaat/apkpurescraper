@@ -16,6 +16,7 @@ class Newappurl(Base):
     id = Column(Integer, primary_key=True)
     appid = Column(String(150), nullable=False)
     lastplaycrawl = Column(DateTime)
+    added_at = Column(DateTime, default=datetime.datetime.now)
 
 
 app_genre_association = Table('appgenre', Base.metadata,

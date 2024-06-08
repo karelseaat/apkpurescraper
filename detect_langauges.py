@@ -8,7 +8,6 @@ from sqlalchemy.orm import sessionmaker, scoped_session
 from common import make_session
 from pprint import pprint
 import langid
-import datetime
 
 asession = make_session()
 
@@ -26,8 +25,6 @@ for i in range(100):
             if result.about:
                 result.default_lang = langid.classify(result.about)[0]
             result.last_classify_timestamp = datetime.datetime.now()
-    else:
-        thingstodo = False
 
     asession.commit()
 
