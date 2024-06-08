@@ -58,6 +58,7 @@ class Playstoreapp(Base):
         secondary=app_genre_association,
         back_populates="apps",
     )
+    crawl_count = Column(Integer, default=0)
 
 
 class Genre(Base):

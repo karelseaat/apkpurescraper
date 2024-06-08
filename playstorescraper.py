@@ -102,6 +102,7 @@ def process_results(multy):
         playstoreapp.price = 0
 
     playstoreapp.removedfromstore = False
+    playstoreapp.crawl_counter += 1
 
     session.add(playstoreapp)
 
