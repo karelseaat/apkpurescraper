@@ -25,6 +25,11 @@ app_genre_association = Table('appgenre', Base.metadata,
                               Column('genre_id', ForeignKey('genre.id'))
                               )
 
+app_keyword_association = Table('appkeyword', Base.metadata,
+                                Column('playstoreapp_id',
+                                    ForeignKey('playstoreapp.id')),
+                                Column('keyword_id', ForeignKey('keyword.id'))
+                                )
 
 class Playstoreapp(Base):
     __tablename__ = 'playstoreapp'
@@ -36,6 +41,7 @@ class Playstoreapp(Base):
     inapp = Column(Boolean, default=False)
     adds = Column(Boolean, default=False)
     last_classify_timestamp = Column(DateTime)
+    last_keywording_timestamp = Column(DateTime)
     default_lang = Column(String(4))
     title = Column(String(256))
     lastupdate = Column(DateTime)
@@ -58,8 +64,22 @@ class Playstoreapp(Base):
         secondary=app_genre_association,
         back_populates="apps",
     )
+    keywords = relationship(
+        "Keyword",
+        secondary=app_keyword_association,
+        back_populates="apps",
+    )
     crawl_counter = Column(Integer, default=0)
 
+class Keyword(Base):
+    __tablename__ = 'keyword'
+    id = Column(Integer, primary_key=True)
+    keyname = Column(String(64), nullable=False)
+    apps = relationship(
+        "Playstoreapp",
+        secondary=app_keyword_association,
+        back_populates="keywords",
+    )
 
 class Genre(Base):
     __tablename__ = 'genre'
