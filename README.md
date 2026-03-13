@@ -1,49 +1,55 @@
- Project Title: Python Google Play Scraper Library
+# Google Play Scraper for Python
 
-Overview
---------
-This project provides a reusable Python library for scraping data from the Google Play Store's webpages. The library is designed to retrieve various details about Android apps, such as app information, reviews, permissions, and more.
+A lightweight Python library for scraping publicly available data from the Google Play Store.
 
-Features
---------
-- Scrape app titles, descriptions, categories, genres, ratings, versions, and download counts.
-- Retrieve detailed information about an app's reviews, including reviewer names, ratings, and written content.
-- Gather data on app permissions and permissions changes over time.
-- Extract keywords from app descriptions to facilitate keyword-based search queries.
+## What it does
 
-Installation
-------------
-To install the library, use pip:
+- Searches for apps and retrieves basic info (title, rating, installs, etc.)
+- Fetches app reviews with reviewer name, rating, date, and text
+- Lists current permissions and tracks changes over time
+- Extracts search-friendly keywords from app descriptions
+
+## Installation
+
 ```bash
-pip install google_play_scraper
+pip install google_play_scraper beautifulsoup4 scrapy
 ```
-Usage
------
-The library is designed to be used as a standalone package in your Python project. Below is an example demonstrating how to use the library to fetch information about an app:
+
+## Example usage
 
 ```python
-import google_play_scraper
+from google_play_scraper import search, Sort
 
-app = google_play_scraper.search(query="<your-app-name>", sort=google_play_scraper.Sort.NEWEST)[0]
-print(f"App name: {app.title}")
-print(f"Rating: {app.rating}")
-print(f"Review count: {app.review_count}")
+# Find the newest app matching your query
+results = search(query="tiktok", sort=Sort.NEWEST)
+app = results[0]
+
+print(f"Title: {app.title}")
+print(f"Rating: {app.rating} ({app.review_count} reviews)")
 print(f"Installs: {app.install_count}")
 ```
-You can customize the `query` parameter to search for a specific app, and you can adjust the sort order using the `Sort` enumeration.
 
-Dependencies
-------------
-The library relies on the BeautifulSoup4 library for HTML parsing and Scrapy for handling web requests. Make sure these packages are installed in your Python environment before using the Google Play Scraper library.
+Get detailed review data:
 
-```bash
-pip install beautifulsoup4 scrapy
+```python
+from google_play_scraper import reviews
+
+reviews_list, _ = reviews(app.app_id)
+for r in reviews_list[:5]:
+    print(f"[{r['score']}★] {r['reviewText'][:80]}…")
 ```
 
-Contributing
--------------
-Pull requests are welcome! If you encounter any issues or would like to suggest new features, please open an issue on our GitHub repository: [<repository-url>](<repository-url>)
+## Dependencies
 
-License
--------
-This project is licensed under the MIT License. For more information about the license, please refer to the `LICENSE` file in this repository.
+- `beautifulsoup4` — HTML parsing
+- `scrapy` — HTTP requests and parsing logic
+
+Both are installed automatically with the package above.
+
+## Contributing
+
+Bug reports and PRs are welcome. See the [issues page](<repository-url>) to get started.
+
+## License
+
+MIT — see `LICENSE` for details.
