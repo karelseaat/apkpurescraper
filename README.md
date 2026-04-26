@@ -53,3 +53,7 @@ Bug reports and PRs are welcome. See the [issues page](<repository-url>) to get 
 ## License
 
 MIT — see `LICENSE` for details.
+
+## More from Karelseaat
+
+For more projects and experiments, visit my GitHub Pages site: [karelseaat.github.io](https://karelseaat.github.io/)
